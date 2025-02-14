@@ -1,0 +1,422 @@
+ /* CSS Variables - Setup */
+:root {
+  /* Colors */
+  --color-primary: #111;
+  --color-text: #C0C0C0;
+  --color-white: #fff;
+  --color-shadow: rgba(255, 255, 255, 0.7);
+  
+  /* UI Colors */
+  --header-bg: rgba(15, 17, 25, 0.35);
+  --ui-element-bg: rgba(0, 0, 0, 0.15);
+  --header-border: rgba(255, 255, 255, 0.06);
+  
+  /* Dimensions */
+  --game-width: 640px;
+  --game-height: 640px;
+  --header-height: 32px;
+  --player-width: 54px;
+  --player-height: 45px;
+  
+  /* Z-index layers */
+  --z-effects: 1000;
+  --z-header: 2000;
+  --z-game: 2;
+  --z-background: 1;
+  
+  /* Typography */
+  --font-primary: 'Press Start 2P', cursive;
+  --font-size-normal: 11px;
+  --font-size-large: 16px;
+  
+  /* Effects */
+  --glow-primary: rgba(255, 255, 255, 0.07);
+  --glow-secondary: rgba(255, 255, 255, 0.03);
+  --text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+  
+  /* Transitions */
+  --transition-standard: 0.3s;
+}
+
+/* Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body { 
+  margin: 0; 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  height: 100vh; 
+  background: var(--color-primary); 
+  overflow: hidden;
+  font-family: var(--font-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Effect Layers */
+#noise-effect, 
+#darkness-effect { 
+  position: fixed; 
+  top: 50%; 
+  left: 50%; 
+  width: var(--game-width); 
+  height: var(--game-height); 
+  transform: translate(-50%, -50%); 
+  pointer-events: none; 
+  z-index: var(--z-effects); 
+}
+
+#noise-effect { 
+  background-image: url(''); 
+  mix-blend-mode: darken; 
+  opacity: 0.15; 
+}
+
+#darkness-effect { 
+  background-image: url(''); 
+  background-size: cover; 
+}
+
+/* Lobby Section */
+#lobby { 
+  position: relative; 
+  width: var(--game-width); 
+  height: var(--game-height);
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: center; 
+  background: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.3));
+}
+
+#lobby-background { 
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  width: 100%;
+  height: 100%;
+  opacity: 70%;
+  background-image: url('assets/Lobby.webp'); 
+  background-size: cover; 
+  z-index: var(--z-background); 
+  filter: brightness(0.9) contrast(1.1);
+}
+
+#lobby-logo {
+  margin-top: 50px; 
+  width: 400px; 
+  height: 135px; 
+  margin-bottom: 5px; 
+  z-index: var(--z-effects);
+  transition: transform var(--transition-standard) ease;
+  filter: drop-shadow(0 0 10px var(--glow-primary));
+}
+
+#lobby-logo:hover {
+  transform: scale(1.02);
+}
+
+#lobby-text { 
+  color: #fffae0f7; 
+  font-family: var(--font-primary); 
+  font-size: var(--font-size-large); 
+  text-align: center; 
+  text-shadow: 0px 2px 44px var(--color-shadow),
+               0 0 10px rgba(255,255,255,0.2);
+  margin-bottom: 20px; 
+  z-index: var(--z-game); 
+  animation: pulse 1.5s infinite;
+}
+
+#lobby-image {
+  margin-top: 70px;
+  z-index: var(--z-game);
+}
+
+/* Game Section */
+#game { 
+  position: relative; 
+  width: var(--game-width); 
+  height: var(--game-height); 
+  overflow: hidden; 
+  display: none;
+  background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 20%);
+}
+
+#background { 
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  width: var(--game-width); 
+  height: var(--game-height); 
+  background-image: url('assets/Playground.webp'); 
+  background-size: cover;
+  filter: contrast(1.1) brightness(0.95);
+}
+
+/* Game Elements */
+#enemies-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: var(--z-background);
+}
+
+.enemy {
+  position: absolute;
+  transition: transform 0.016s linear;
+  will-change: transform;
+  filter: drop-shadow(0 0 3px rgba(255,0,0,0.2));
+}
+
+#player {
+    position: absolute; 
+    width: 48px;
+    height: 48px;
+    background-image: url('assets/enemy-big.png'); 
+    background-size: 200% 100%;
+    background-repeat: no-repeat;
+    will-change: transform, background-position;
+    z-index: var(--z-game);
+    filter: drop-shadow(0 0 5px var(--glow-primary));
+    transform-origin: center center;
+    image-rendering: pixelated;
+    /* Remove the CSS animation */
+}
+
+@keyframes playerThrust {
+    from { background-position: 0 0; }
+    to { background-position: -96px 0; } /* Adjusted for new size */
+}
+
+/* Header and UI Elements */
+.header {
+  z-index: var(--z-header); 
+  position: absolute; 
+  width: calc(var(--game-width) - 24px); 
+  height: 30px; /* Fixed height */
+  left: 13px; 
+  top: 5px;
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+  background: linear-gradient(180deg, 
+    rgba(20, 22, 30, 0.4) 0%, 
+    rgba(15, 17, 25, 0.35) 100%);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  border-radius: 12px;
+  padding: 0 15px;
+  border: 1px solid var(--header-border);
+}
+
+.score { 
+  display: flex; 
+  gap: 6px; 
+  align-items: center;
+  background: var(--ui-element-bg);
+  border-radius: 6px;
+  padding: 0 8px;
+}
+
+.lives { 
+  display: flex; 
+  gap: 5px; 
+  align-items: center;
+  background: var(--ui-element-bg);
+  border-radius: 6px;
+  padding: 0 8px;
+}
+
+.wave {
+  display: flex;
+  align-items: center;
+  background: var(--ui-element-bg);
+  border-radius: 6px;
+  padding: 0 8px;
+}
+
+.score img { 
+  width: 20px;
+  height: 20px;
+  opacity: 0.9;
+  filter: drop-shadow(0 0 2px var(--glow-primary));
+}
+
+.lives img { 
+  width: 30px;
+  height: 30px;
+  opacity: 0.9;
+  transition: opacity var(--transition-standard);
+  filter: drop-shadow(0 0 2px var(--glow-primary));
+}
+
+
+/* Typography */
+.header a, 
+.time,
+.wave { 
+  font-family: var(--font-primary); 
+  font-size: 12px;
+  color: var(--color-text);
+  text-shadow: var(--text-shadow);
+}
+
+.time {
+  margin: 0 12px;
+}
+
+/* Bullet System */
+#bullets-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: var(--z-background);
+  pointer-events: none;
+}
+
+.bullet {
+  position: absolute;
+  z-index: var(--z-game);
+  pointer-events: none;
+  filter: drop-shadow(0 0 2px var(--glow-primary));
+}
+
+/* Animations */
+@keyframes moveBackground { 
+  from { background-position: 0 0; } 
+  to { background-position: -640px 0; } 
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+/* Performance Optimizations */
+.enemy, 
+#player, 
+.bullet {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+
+/* Reduce paint operations by grouping transforms */
+.enemy,
+.bullet,
+#player {
+  transform-origin: center center;
+  contain: layout style paint;
+}
+
+/* Optimize composite layers */
+.header {
+  contain: layout style;
+  z-index: var(--z-header);
+}
+
+/* Add this to your existing CSS */
+.explosion {
+  position: absolute;
+  pointer-events: none;
+  width: 48px;
+  height: 48px;
+  transform-origin: center center;
+  will-change: transform, opacity;
+  z-index: 1;
+}
+
+.explosion::before,
+.explosion::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: rgba(255, 200, 0, 0.8);
+  transform: scale(0);
+  opacity: 1;
+}
+
+.explosion.active::before {
+  animation: explode1 0.3s ease-out forwards;
+}
+
+.explosion.active::after {
+  animation: explode2 0.3s ease-out forwards;
+}
+
+@keyframes explode1 {
+  to {
+    transform: scale(1.2);
+    opacity: 0;
+  }
+}
+
+@keyframes explode2 {
+  to {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+}
+
+@keyframes scorePopup {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+.score-popup {
+    animation: scorePopup 0.5s ease-out forwards;
+    text-shadow: 0 0 4px rgba(255, 255, 255, 0.7);
+    will-change: transform, opacity;
+}
+
+/* Add better breakpoints */
+@media (max-width: 660px) {
+  :root {
+    --game-width: 100vw;
+    --game-height: 100vh;
+    --header-height: 28px; /* Slightly smaller for mobile */
+    --font-size-normal: 10px; /* Smaller font for mobile */
+  }
+  
+  .header {
+    width: calc(100% - 16px);
+    left: 8px;
+    padding: 0 10px;
+  }
+
+  .score img {
+    width: 16px;
+    height: 16px;
+  }
+
+  .lives img {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/* Add landscape mode optimization */
+@media (max-height: 500px) and (orientation: landscape) {
+  .header {
+    top: 2px;
+    height: 26px;
+  }
+}
