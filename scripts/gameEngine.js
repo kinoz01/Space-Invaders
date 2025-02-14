@@ -6,9 +6,9 @@ class GameEngine {
     this.scoreElement = document.querySelector('.score a');
     this.timeElement = document.querySelector('.time');
     this.livesElements = document.querySelectorAll('.life');
-
+    
     this.explosionManager = new Explosion(this.gameContainer);
-
+    this.screenManager = new Screens(this);
 
     this.enemyGrid = null;
     this.keyStates = {
@@ -16,7 +16,7 @@ class GameEngine {
       ArrowRight: false,
       Space: false
     };
-    
+
     this.gameState = 'lobby'; // Can be 'lobby', 'playing', 'paused', 'gameOver'
     this.gameTime = 0;
     this.score = 0;
@@ -402,10 +402,7 @@ class GameEngine {
     const finalScore = this.score;
     const timeElapsed = this.timeElement.textContent;
     
-    alert(`Congratulations! You've completed all 10 levels!\nFinal Score: ${finalScore}\nTime: ${timeElapsed}`);
-    
-    // Reset the game
-    this.resetGame();
+    this.screenManager.showVictoryScreen(finalScore, timeElapsed);
   }
 
   runGameLoop() {
@@ -531,8 +528,7 @@ class GameEngine {
     this.isRunning = false;
     this.gameState = 'gameOver';
     cancelAnimationFrame(this.rafHandle);
-    alert('Game Over! The aliens have landed!');
-    this.resetGame();
+    this.screenManager.showGameOverScreen(this.score);
   }
 
   resetGame() {
@@ -558,5 +554,6 @@ class GameEngine {
       this.bulletsContainer.removeChild(this.bulletsContainer.firstChild);
     }
     this.bullets = [];
+    this.screenManager.hideScreens();
   }
 }

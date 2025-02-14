@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Space Invaders Game - A classic arcade shooter">
 
-  <!-- Change browser UI elements' color -->
+  <!-- Browser UI elements' -->
   <meta name="theme-color" content="#111111">
+  <link rel="icon" href="assets/favicon.svg" type="image/x-icon">
   
   <!-- Preconnect for Performance -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -51,10 +52,35 @@
     <div id="player"></div>
   </div>
 
+  <!-- Victory and game-over screens -->
+  <div class="game-screen victory-screen hidden">
+    <div class="screen-content">
+      <img src="assets/Victory.png" alt="Victory!" class="result-image">
+      <h2>Congratulations!</h2>
+      <br><div class="stats">
+        <p>Final Score: <span class="final-score">0</span></p>
+        <p>Time: <span class="final-time">0:00</span></p>
+      </div>
+      <button class="restart-btn">Play Again</button>
+    </div>
+  </div>
+  <div class="game-screen game-over-screen hidden">
+    <div class="screen-content">
+      <img src="assets/Lose.png" alt="You Lose!" class="result-image">
+      <h2>Game Over!</h2></br>
+      <p>The aliens have landed!</p>
+      <div class="stats">
+        <p>Score: <span class="final-score">0</span></p>
+      </div>
+      <button class="restart-btn">Try Again</button>
+    </div>
+  </div>
+
   <script src="/scripts/explosion.js"></script>
   <script src="/scripts/enemy.js"></script>
   <script src="/scripts/bullet.js"></script>
   <script src="/scripts/enemyGrid.js"></script>
+  <script src="/scripts/screens.js"></script>
   <script src="/scripts/gameEngine.js"></script>
   <script>
     // Initialize game instance

@@ -32,49 +32,49 @@ class EnemyGrid {
   }
 
   initialize() {
-        while (this.container.firstChild) {
-            this.container.removeChild(this.container.firstChild);
-        }
-        
-        // Use current formation values
-        const gridWidth = (48 + this.padding) * this.currentFormation.cols - this.padding;
-        const startX = (640 - gridWidth) / 2;
-        const startY = 60;
-
-        // Clear existing enemies array
-        this.enemies = [];
-
-        for (let row = 0; row < this.currentFormation.rows; row++) {
-            for (let col = 0; col < this.currentFormation.cols; col++) {
-                const x = startX + col * (48 + this.padding);
-                const y = startY + row * (48 + this.padding);
-                const type = Math.min(row + 1, 3);
-                
-                const enemy = new Enemy(x, y, type);
-                this.enemies.push(enemy);
-                this.container.appendChild(enemy.element);
-            }
-        }
+    while (this.container.firstChild) {
+        this.container.removeChild(this.container.firstChild);
     }
+    
+    // Use current formation values
+    const gridWidth = (48 + this.padding) * this.currentFormation.cols - this.padding;
+    const startX = (640 - gridWidth) / 2;
+    const startY = 60;
+
+    // Clear existing enemies array
+    this.enemies = [];
+
+    for (let row = 0; row < this.currentFormation.rows; row++) {
+      for (let col = 0; col < this.currentFormation.cols; col++) {
+        const x = startX + col * (48 + this.padding);
+        const y = startY + row * (48 + this.padding);
+        const type = Math.min(row + 1, 3);
+        
+        const enemy = new Enemy(x, y, type);
+        this.enemies.push(enemy);
+        this.container.appendChild(enemy.element);
+      }
+    }
+  }
 
   // Add method to change formation
   setFormation(rows, cols, padding = 10) {
-        this.currentFormation = {
-            rows: rows,
-            cols: cols
-        };
-        this.padding = padding;
-        this.initialize();
-    }
+    this.currentFormation = {
+      rows: rows,
+      cols: cols
+    };
+    this.padding = padding;
+    this.initialize();
+  }
 
   // Add this method to EnemyGrid class to properly reset speeds:
   reset() {
-      this.moveSpeed = 0.03;
-      this.continuousSpeed = 0.05;
-      this.direction = 1;
-      this.lastMoveTime = 0;
-      this.isMoving = false;
-      this.currentStepProgress = 0;
+    this.moveSpeed = 0.03;
+    this.continuousSpeed = 0.05;
+    this.direction = 1;
+    this.lastMoveTime = 0;
+    this.isMoving = false;
+    this.currentStepProgress = 0;
   }
 
   tryEnemyShoot(currentTime) {
