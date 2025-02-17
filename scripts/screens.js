@@ -9,13 +9,13 @@ class Screens {
 
     bindEvents() {
         this.victoryScreen.querySelector('.restart-btn').addEventListener('click', () => {
-        this.hideScreens();
-        this.gameEngine.resetGame();
+            this.hideScreens();
+            this.gameEngine.resetGame();
         });
         
         this.gameOverScreen.querySelector('.restart-btn').addEventListener('click', () => {
-        this.hideScreens();
-        this.gameEngine.resetGame();
+            this.hideScreens();
+            this.gameEngine.resetGame();
         });
     }
 

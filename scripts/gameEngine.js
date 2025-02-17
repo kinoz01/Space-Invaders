@@ -28,14 +28,16 @@ class GameEngine {
     this.isPaused = false;
     this.lastUIUpdate = 0;
 
-    // Bullet management
-    this.bullets = [];
-    this.enemyBullets = [];
-    this.lastPlayerShot = 0;
-    this.playerShootCooldown = 350;
+    // Bullet management: now uses BulletPool
     this.bulletsContainer = document.createElement('div');
     this.bulletsContainer.id = 'bullets-container';
     this.gameContainer.appendChild(this.bulletsContainer);
+
+    // Create a bullet pool with a chosen size (e.g. 50).
+    this.bulletPool = new BulletPool(this.bulletsContainer, 50);
+
+    this.lastPlayerShot = 0;
+    this.playerShootCooldown = 350;
 
     this.TIMESTEP = 1000 / 60;
     this.MAX_FRAMETIME = 250;
@@ -53,10 +55,10 @@ class GameEngine {
     this.enemiesDefeated = 0;
     this.isWaveTransitioning = false;
 
-    // Add animation properties
+    // Animation properties
     this.spriteFrame = 0;
-        this.frameTime = 0;
-        this.frameDuration = 100; // Update every 100ms
+    this.frameTime = 0;
+    this.frameDuration = 100; // Update every 100ms
     
     this.init();
   }
@@ -84,8 +86,8 @@ class GameEngine {
       }
       if (e.code === 'KeyL' && this.gameState === 'playing') {
         if (this.currentLevel < 10) {
-            this.currentLevel++;
-            this.setupLevel(this.currentLevel);
+          this.currentLevel++;
+          this.setupLevel(this.currentLevel);
         }
       }
     });
@@ -99,22 +101,22 @@ class GameEngine {
   }
 
   createEnemyBullet(x, y) {
-    const bullet = new Bullet(x, y, false); // false indicates enemy bullet
-    this.bullets.push(bullet);
-    this.bulletsContainer.appendChild(bullet.element);
+    // Spawn an enemy bullet from the pool
+    this.bulletPool.spawn(x, y, false);
   }
   
   handleSpacePress() {
     switch(this.gameState) {
       case 'lobby':
-        this.keyStates.Space = false; // Reset space key state before starting game
+        this.keyStates.Space = false; // Reset space key state before starting
         this.startGame();
         break;
       case 'gameOver':
         this.resetGame();
         break;
       case 'playing':
-        // Do nothing here - shooting is handled in update loop
+        // Shooting is handled continuously in update loop, 
+        // so no immediate action needed here
         break;
     }
   }
@@ -143,133 +145,133 @@ class GameEngine {
     this.currentLevel = 1;
     this.currentWave = 1;
     this.enemiesDefeated = 0;
+
+    // Create and reset enemy grid
     this.enemyGrid = new EnemyGrid('step');
-    this.enemyGrid.reset(); // Reset the enemy grid properties
+    this.enemyGrid.reset();
     this.setupLevel(this.currentLevel);
+
     this.resetKeyStates();
     this.runGameLoop();
   }
 
   setupLevel(level) {
-  const baseSpeed = 0.03;
-  const baseStepDistance = 20;  // Add this
-  const baseInterval = 2000;
-  const baseDuration = 1000;    // Add this
-  // Define formations for each level
-  const levelFormations = {
-      1: { rows: 2, cols: 5 },    // 10 enemies - Easy start
-      2: { rows: 2, cols: 7 },    // 14 enemies
-      3: { rows: 3, cols: 6 },    // 18 enemies
-      4: { rows: 3, cols: 7 },    // 21 enemies
-      5: { rows: 4, cols: 6 },    // 24 enemies
-      6: { rows: 4, cols: 7 },    // 28 enemies
-      7: { rows: 5, cols: 6 },    // 30 enemies
-      8: { rows: 5, cols: 7 },    // 35 enemies
-      9: { rows: 6, cols: 7 },    // 42 enemies
-      10: { rows: 7, cols: 8 }    // 56 enemies - Final challenge
-  };
+    const baseSpeed = 0.03;
+    const baseStepDistance = 20;
+    const baseInterval = 2000;
+    const baseDuration = 1000;
 
-  // Get formation for current level
-  const formation = levelFormations[level] || levelFormations[1];
+    // Define formations for each level
+    const levelFormations = {
+      1: { rows: 2, cols: 5 },    
+      2: { rows: 2, cols: 7 },    
+      3: { rows: 3, cols: 6 },    
+      4: { rows: 3, cols: 7 },    
+      5: { rows: 4, cols: 6 },    
+      6: { rows: 4, cols: 7 },    
+      7: { rows: 5, cols: 6 },    
+      8: { rows: 5, cols: 7 },    
+      9: { rows: 6, cols: 7 },    
+      10: { rows: 7, cols: 8 }    
+    };
 
-  // Update enemy grid formation
-  this.enemyGrid.setFormation(formation.rows, formation.cols);
+    // Get formation for current level
+    const formation = levelFormations[level] || levelFormations[1];
+    this.enemyGrid.setFormation(formation.rows, formation.cols);
+    this.enemiesPerWave = formation.rows * formation.cols;
 
-  // Update enemiesPerWave based on new formation
-  this.enemiesPerWave = formation.rows * formation.cols;
-
-  switch(level) {
-    case 1: // Beginner level
+    switch(level) {
+      case 1: // Beginner level
         this.enemyGrid.setMovementMode('step');
         this.enemyGrid.setStepParameters(baseSpeed, baseStepDistance, baseInterval, baseDuration);
         break;
         
-    case 2:
+      case 2:
         this.enemyGrid.setMovementMode('step');
         this.enemyGrid.setStepParameters(baseSpeed * 1.4, baseStepDistance, 
             baseInterval - 300, baseDuration - 100);
         break;
         
-    case 3:
+      case 3:
         this.enemyGrid.setMovementMode('continuous');
         this.enemyGrid.setContinuousSpeed(baseSpeed * 1.5);
         break;
         
-    case 4:
+      case 4:
         this.enemyGrid.setMovementMode('continuous');
         this.enemyGrid.setContinuousSpeed(baseSpeed * 1.7);
         break;
         
-    case 5:
+      case 5:
         this.enemyGrid.setMovementMode('step');
         this.enemyGrid.setStepParameters(baseSpeed * 1.8, baseStepDistance + 10, 
             baseInterval - 600, baseDuration - 300);
         break;
         
-    case 6:
+      case 6:
         this.enemyGrid.setMovementMode('continuous');
         this.enemyGrid.setContinuousSpeed(baseSpeed * 2.0);
         break;
         
-    case 7:
+      case 7:
         this.enemyGrid.setMovementMode('step');
         this.enemyGrid.setStepParameters(baseSpeed * 2.2, baseStepDistance + 15, 
             baseInterval - 800, baseDuration - 400);
         break;
         
-    case 8:
+      case 8:
         this.enemyGrid.setMovementMode('continuous');
         this.enemyGrid.setContinuousSpeed(baseSpeed * 2.4);
         break;
         
-    case 9:
+      case 9:
         this.enemyGrid.setMovementMode('step');
         this.enemyGrid.setStepParameters(baseSpeed * 2.6, baseStepDistance + 20, 
             baseInterval - 1000, baseDuration - 500);
         break;
         
-    case 10: // Final level - maximum challenge
+      case 10: // Final level - maximum challenge
         this.enemyGrid.setMovementMode('continuous');
-        this.enemyGrid.setContinuousSpeed(baseSpeed * 3.0); // Much faster for final level
+        this.enemyGrid.setContinuousSpeed(baseSpeed * 3.0);
         break;
-  }
+    }
 
-  // Adjust enemy shooting based on formation size
-  const totalEnemies = this.enemiesPerWave;
-  this.enemyGrid.enemyShootInterval = Math.max(
-      400, 
-      2000 - (level * 150) - (totalEnemies * 5)
-  );
-  
-  // Adjust drop distance based on formation height
-  this.enemyGrid.dropDistance = Math.min(
-      25 + (level * 2), 
-      65 / formation.rows // Smaller drops for taller formations
-  );
-}
+    // Adjust enemy shooting intervals
+    const totalEnemies = this.enemiesPerWave;
+    this.enemyGrid.enemyShootInterval = Math.max(
+        400, 
+        2000 - (level * 150) - (totalEnemies * 5)
+    );
+    
+    // Adjust drop distance based on formation height
+    this.enemyGrid.dropDistance = Math.min(
+        25 + (level * 2), 
+        65 / formation.rows // smaller drops for taller formations
+    );
+  }
 
   playerShoot() {
     const now = performance.now();
     if (now - this.lastPlayerShot >= this.playerShootCooldown) {
       const bulletX = this.playerX + (this.PLAYER_WIDTH / 2) - 10.5;
       const bulletY = this.playerY - 22;
-      
-      const bullet = new Bullet(bulletX, bulletY, true);
-      this.bullets.push(bullet);
-      this.bulletsContainer.appendChild(bullet.element);
-      
+
+      this.bulletPool.spawn(bulletX, bulletY, true);
       this.lastPlayerShot = now;
     }
   }
 
+  /**
+   * Check and update bullets every frame
+   */
   updateBullets(delta) {
-    for (let i = this.bullets.length - 1; i >= 0; i--) {
-      const bullet = this.bullets[i];
-      const isActive = bullet.update(delta);
-
-      if (!isActive) {
-        this.bulletsContainer.removeChild(bullet.element);
-        this.bullets.splice(i, 1);
+    const activeBullets = this.bulletPool.getActiveBullets();
+    for (let bullet of activeBullets) {
+      const isInBounds = bullet.update(delta);
+      
+      // If bullet goes out of bounds, release it back to the pool
+      if (!isInBounds) {
+        this.bulletPool.release(bullet);
         continue;
       }
 
@@ -278,21 +280,20 @@ class GameEngine {
         for (let j = this.enemyGrid.enemies.length - 1; j >= 0; j--) {
           const enemy = this.enemyGrid.enemies[j];
           if (bullet.checkCollision(enemy)) {
-            // Create explosion at enemy position
+            // Explosion at enemy position
             this.explosionManager.createExplosion(enemy.x, enemy.y);
 
-            // Calculate score and update overall score
+            // Score
             const scorePoints = this.calculateScore(enemy.type);
             this.score += scorePoints;
 
-            // Remove enemy from grid
+            // Remove enemy
             this.enemyGrid.removeEnemy(enemy);
 
-            // Remove bullet from the screen and from the array
-            this.bulletsContainer.removeChild(bullet.element);
-            this.bullets.splice(i, 1);
+            // Release bullet
+            this.bulletPool.release(bullet);
 
-            // Optional: Show score popup for visual feedback
+            // Show score popup
             const scoreText = document.createElement('div');
             scoreText.className = 'score-popup';
             scoreText.textContent = `+${scorePoints}`;
@@ -307,11 +308,9 @@ class GameEngine {
               z-index: 1000;
               opacity: 1;
               transform: translateY(0);
-              transition: all 0.5s ease-out;
             `;
             this.gameContainer.appendChild(scoreText);
 
-            // Animate and remove score notification
             requestAnimationFrame(() => {
               scoreText.style.opacity = '0';
               scoreText.style.transform = 'translateY(-20px)';
@@ -322,28 +321,29 @@ class GameEngine {
               }
             }, 500);
 
-            // Check if all enemies have been defeated
+            // Check if wave is cleared
             if (this.enemyGrid.enemies.length === 0) {
               setTimeout(() => this.startNewWave(), 0);
             }
-
-            break; // Exit the enemy loop once a collision is processed
+            break; // break out of the enemy loop
           }
         }
-      } else {
-        // Handle enemy bullets hitting the player
+      }
+      else {
+        // Enemy bullets hitting the player
         if (this.checkBulletPlayerCollision(bullet)) {
-          // Create explosion effect for player hit
+          // Explosion effect on player
           this.explosionManager.createExplosion(
             this.playerX + (this.PLAYER_WIDTH / 2) - 24,
             this.playerY + (this.PLAYER_HEIGHT / 2) - 24
           );
 
           this.handlePlayerHit();
-          this.bulletsContainer.removeChild(bullet.element);
-          this.bullets.splice(i, 1);
 
-          // Add hit flash effect to player
+          // Release bullet
+          this.bulletPool.release(bullet);
+
+          // Hit flash effect
           this.playerElement.style.filter = 'brightness(2)';
           setTimeout(() => {
             this.playerElement.style.filter = 'none';
@@ -354,11 +354,10 @@ class GameEngine {
   }
 
   calculateScore(enemyType) {
-    // Simply return the score based on enemy type
     switch(enemyType) {
-        case 3: return 30;
-        case 2: return 20;
-        default: return 10;
+      case 3: return 30;
+      case 2: return 20;
+      default: return 10;
     }
   }
 
@@ -372,23 +371,21 @@ class GameEngine {
 
       if (this.currentWave % 2 === 0) {
         this.currentLevel++;
-        
         if (this.currentLevel > 10) {
           this.victoryScreen();
           return;
         }
-        
         this.setupLevel(this.currentLevel);
       } else {
-        // For odd-numbered waves, just reinitialize with same formation
+        // For odd-numbered waves, just re-initialize with the same formation
         this.enemyGrid.initialize();
       }
 
-      // Clear bullets
-      while (this.bulletsContainer.firstChild) {
-        this.bulletsContainer.removeChild(this.bulletsContainer.firstChild);
+      // Clear all bullets from the pool visually
+      const activeBullets = this.bulletPool.getActiveBullets();
+      for (let bullet of activeBullets) {
+        this.bulletPool.release(bullet);
       }
-      this.bullets = [];
 
       this.isWaveTransitioning = false;
     });
@@ -398,10 +395,9 @@ class GameEngine {
     this.isRunning = false;
     this.gameState = 'victory';
     cancelAnimationFrame(this.rafHandle);
-    
+
     const finalScore = this.score;
     const timeElapsed = this.timeElement.textContent;
-    
     this.screenManager.showVictoryScreen(finalScore, timeElapsed);
   }
 
@@ -430,16 +426,16 @@ class GameEngine {
   update(delta, currentTime) {
     if (this.isPaused) return;
 
-    // Update sprite animation
+    // Sprite animation
     this.frameTime += delta;
     if (this.frameTime >= this.frameDuration) {
       this.spriteFrame = (this.spriteFrame + 1) % 2;
       this.frameTime = 0;
-      this.playerElement.style.backgroundPosition = 
-        `${this.spriteFrame * -48}px 0`; // -48px because frame width is 48px
+      // Shift background sprite - each frame is 48px wide
+      this.playerElement.style.backgroundPosition = `${this.spriteFrame * -48}px 0`;
     }
 
-    // Regular movement
+    // Player movement
     const movement = this.PLAYER_SPEED * delta;
     if (this.keyStates.ArrowLeft) {
       this.playerX = Math.max(0, this.playerX - movement);
@@ -448,25 +444,31 @@ class GameEngine {
       this.playerX = Math.min(this.GAME_WIDTH - this.PLAYER_WIDTH, this.playerX + movement);
     }
   
-    // Only allow shooting when actually playing
+    // Shooting
     if (this.keyStates.Space && this.gameState === 'playing') {
       this.playerShoot();
     }
 
+    // Enemies
     if (this.enemyGrid) {
       this.enemyGrid.update(delta, currentTime);
     }
 
+    // Bullets
     this.updateBullets(delta);
+
+    // Time
     this.gameTime += delta;
     this.updateTimeDisplay();
   }
 
   checkBulletPlayerCollision(bullet) {
-    return bullet.x < this.playerX + this.PLAYER_WIDTH &&
-            bullet.x + bullet.width > this.playerX &&
-            bullet.y < this.playerY + 45 && // Player height is 45px
-            bullet.y + bullet.height > this.playerY;
+    return (
+      bullet.x < this.playerX + this.PLAYER_WIDTH &&
+      bullet.x + bullet.width > this.playerX &&
+      bullet.y < this.playerY + 45 && 
+      bullet.y + bullet.height > this.playerY
+    );
   }
 
   handlePlayerHit() {
@@ -498,7 +500,7 @@ class GameEngine {
     this.scoreElement.textContent = `SCORE: ${this.score}`;
     document.querySelector('.wave a').textContent = `WAVE: ${this.currentWave}`;
     this.livesElements.forEach((life, index) => {
-        life.style.opacity = index < this.lives ? 1 : 0.3;
+      life.style.opacity = index < this.lives ? 1 : 0.3;
     });
 
     this.lastUIUpdate = now;
@@ -512,9 +514,9 @@ class GameEngine {
     
     // Reset frame timing on unpause
     if (!this.isPaused) {
-        this.lastTick = performance.now();
-        this.accumulator = 0;
-        this.frameTime = 0;
+      this.lastTick = performance.now();
+      this.accumulator = 0;
+      this.frameTime = 0;
     }
   }
 
@@ -546,14 +548,15 @@ class GameEngine {
     this.enemiesDefeated = 0;
     this.explosionManager.clear();
 
-    // Reset key states when resetting the game
+    // Reset key states when resetting
     this.resetKeyStates();
 
-    // Clear all bullets
-    while (this.bulletsContainer.firstChild) {
-      this.bulletsContainer.removeChild(this.bulletsContainer.firstChild);
+    // Clear all bullets from the pool
+    const activeBullets = this.bulletPool.getActiveBullets();
+    for (let bullet of activeBullets) {
+      this.bulletPool.release(bullet);
     }
-    this.bullets = [];
+
     this.screenManager.hideScreens();
   }
 }
