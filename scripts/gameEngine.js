@@ -484,11 +484,7 @@ class GameEngine {
     }
 
     render(alpha) {
-        console.log(alpha);
-        console.log(this.playerX);
-
         const renderX = this.playerX + (this.PLAYER_SPEED * alpha * this.TIMESTEP);
-        console.log(renderX);
         this.playerElement.style.transform = `translate3d(${renderX}px, ${this.playerY}px, 0)`;
         this.updateUI();
     }
