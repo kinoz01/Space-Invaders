@@ -256,13 +256,11 @@ class GameEngine {
         }
     }
 
-    /**
-     * Check and update bullets every frame
-     */
-    updateBullets(delta) {
+    // Check and update bullets every frame
+    updateBullets(timeStep) {
         const activeBullets = this.bulletPool.getActiveBullets();
         for (let bullet of activeBullets) {
-            const isInBounds = bullet.update(delta);
+            const isInBounds = bullet.update(timeStep);
 
             // If bullet goes out of bounds, release it back to the pool
             if (!isInBounds) {
@@ -419,11 +417,11 @@ class GameEngine {
         this.rafHandle = requestAnimationFrame(this.runGameLoop.bind(this));
     }
 
-    update(delta, currentTime) {
+    update(timeStep, currentTime) {
         if (this.isPaused) return;
 
         // Sprite animation
-        this.frameTime += delta;
+        this.frameTime += timeStep;
         if (this.frameTime >= this.frameDuration) {
             this.spriteFrame = (this.spriteFrame + 1) % 2;
             this.frameTime = 0;
@@ -432,7 +430,7 @@ class GameEngine {
         }
 
         // Player movement
-        const movement = this.PLAYER_SPEED * delta;
+        const movement = this.PLAYER_SPEED * timeStep;
         if (this.keyStates.ArrowLeft) {
             this.playerX = Math.max(0, this.playerX - movement);
         }
@@ -447,14 +445,14 @@ class GameEngine {
 
         // Enemies
         if (this.enemyGrid) {
-            this.enemyGrid.update(delta, currentTime);
+            this.enemyGrid.update(timeStep, currentTime);
         }
 
         // Bullets
-        this.updateBullets(delta);
+        this.updateBullets(timeStep);
 
         // Time
-        this.gameTime += delta;
+        this.gameTime += timeStep;
         this.updateTimeDisplay();
     }
 
@@ -491,7 +489,7 @@ class GameEngine {
 
 
     updateUI() {
-        const now = performance.now();
+        const now = performance.now();      
         if (now - this.lastUIUpdate < 16) return;
 
         this.scoreElement.textContent = `SCORE: ${this.score}`;

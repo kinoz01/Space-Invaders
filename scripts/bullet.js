@@ -39,8 +39,8 @@ class Bullet {
     }
 
     // Update bullet position and return false if it's out of bounds
-    update(delta) {
-        this.y += this.speed * delta;
+    update(timeStep) {
+        this.y += this.speed * timeStep;
         this.updatePosition();
         return this.isInBounds();
     }
