@@ -28,7 +28,7 @@ class GameEngine {
     this.isPaused = false;
     this.lastUIUpdate = 0;
 
-    // Bullet management: now uses BulletPool
+    // Bullet management
     this.bulletsContainer = document.createElement('div');
     this.bulletsContainer.id = 'bullets-container';
     this.gameContainer.appendChild(this.bulletsContainer);
@@ -47,8 +47,8 @@ class GameEngine {
 
     this.PLAYER_SPEED = 0.3;
     this.GAME_WIDTH = 640;
-    this.PLAYER_WIDTH = 48;  // Increased from 32
-    this.PLAYER_HEIGHT = 48; // Increased from 32
+    this.PLAYER_WIDTH = 48;
+    this.PLAYER_HEIGHT = 48;
 
     this.currentWave = 1;
     this.enemiesPerWave = 21; // 3 rows × 7 columns = 21 enemies
@@ -81,7 +81,7 @@ class GameEngine {
         }
       }
       
-      if (e.code === 'Escape') {
+      if (e.code === 'KeyP') {
         this.togglePause();
       }
       if (e.code === 'KeyL' && this.gameState === 'playing') {
