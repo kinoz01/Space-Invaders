@@ -33,7 +33,7 @@ class GameEngine {
         this.bulletsContainer.id = 'bullets-container';
         this.gameContainer.appendChild(this.bulletsContainer);
 
-        // Create a bullet pool with a chosen size (e.g. 50).
+        // Create a bullet pool with a chosen size.
         this.bulletPool = new BulletPool(this.bulletsContainer, 50);
 
         this.lastPlayerShot = 0;
@@ -291,17 +291,17 @@ class GameEngine {
                         scoreText.className = 'score-popup';
                         scoreText.textContent = `+${scorePoints}`;
                         scoreText.style.cssText = `
-                position: absolute;
-                left: ${enemy.x + 24}px;
-                top: ${enemy.y}px;
-                color: white;
-                font-family: var(--font-primary);
-                font-size: 12px;
-                pointer-events: none;
-                z-index: 1000;
-                opacity: 1;
-                transform: translateY(0);
-              `;
+                            position: absolute;
+                            left: ${enemy.x + 24}px;
+                            top: ${enemy.y}px;
+                            color: white;
+                            font-family: var(--font-primary);
+                            font-size: 12px;
+                            pointer-events: none;
+                            z-index: 1000;
+                            opacity: 1;
+                            transform: translateY(0);
+                        `;
                         this.gameContainer.appendChild(scoreText);
 
                         requestAnimationFrame(() => {
