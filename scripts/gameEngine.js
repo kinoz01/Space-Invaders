@@ -412,7 +412,7 @@ class GameEngine {
             this.update(this.TIMESTEP, now);
             this.accumulator -= this.TIMESTEP;
         }
-
+        // Interpolate
         this.render(this.accumulator / this.TIMESTEP);
         this.rafHandle = requestAnimationFrame(this.runGameLoop.bind(this));
     }
