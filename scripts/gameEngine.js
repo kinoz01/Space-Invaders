@@ -9,7 +9,8 @@ class GameEngine {
 
         this.explosionManager = new Explosion(this.gameContainer);
         this.screenManager = new Screens(this);
-
+        
+        // Gameplay parameters.
         this.enemyGrid = null;
         this.keyStates = {
             ArrowLeft: false,
@@ -46,7 +47,7 @@ class GameEngine {
         this.accumulator = 0;
         this.rafHandle = null;
 
-        // Gameplay parameters.
+        // more Gameplay parameters.
         this.PLAYER_SPEED = 0.3;
         this.GAME_WIDTH = 640;
         this.PLAYER_WIDTH = 48;
