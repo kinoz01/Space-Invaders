@@ -46,11 +46,11 @@ class GameEngine {
         this.accumulator = 0;
         this.rafHandle = null;
 
+        // Gameplay parameters.
         this.PLAYER_SPEED = 0.3;
         this.GAME_WIDTH = 640;
         this.PLAYER_WIDTH = 48;
         this.PLAYER_HEIGHT = 48;
-
         this.currentWave = 1;
         this.enemiesPerWave = 21; // 3 rows × 7 columns = 21 enemies
         this.enemiesDefeated = 0;
