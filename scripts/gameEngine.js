@@ -39,6 +39,7 @@ class GameEngine {
         this.lastPlayerShot = 0;
         this.playerShootCooldown = 350;
 
+        // Semi-fixed timestep parameters.
         this.TIMESTEP = 1000 / 60; // 16.7 ms
         this.MAX_FRAMETIME = 250;
         this.lastTick = performance.now();
