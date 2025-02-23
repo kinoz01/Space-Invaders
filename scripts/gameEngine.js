@@ -38,7 +38,7 @@ class GameEngine {
         this.bulletPool = new BulletPool(this.bulletsContainer, 50);
 
         this.lastPlayerShot = 0;
-        this.playerShootCooldown = 350;
+        this.playerShootCooldown = 10;
 
         // Semi-fixed timestep parameters.
         this.TIMESTEP = 1000 / 60; // 16.7 ms
@@ -57,7 +57,7 @@ class GameEngine {
         this.enemiesDefeated = 0;
         this.isWaveTransitioning = false;
 
-        // Animation properties
+        // Sprit Animation
         this.spriteFrame = 0;
         this.frameTime = 0;
         this.frameDuration = 100; // Update every 100ms
@@ -114,6 +114,7 @@ class GameEngine {
                 break;
             case 'gameOver':
                 this.resetGame();
+                this.startGame();
                 break;
         }
     }
