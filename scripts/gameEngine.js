@@ -33,7 +33,6 @@ class GameEngine {
         this.bulletsContainer = document.createElement('div');
         this.bulletsContainer.id = 'bullets-container';
         this.gameContainer.appendChild(this.bulletsContainer);
-
         // Create a bullet pool with a chosen size.
         this.bulletPool = new BulletPool(this.bulletsContainer, 50);
 
