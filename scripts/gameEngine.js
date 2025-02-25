@@ -414,8 +414,7 @@ class GameEngine {
             this.update(this.TIMESTEP, now);
             this.accumulator -= this.TIMESTEP;
         }
-        // Interpolate
-        this.render(this.accumulator / this.TIMESTEP);
+        this.render();
         this.rafHandle = requestAnimationFrame(this.runGameLoop.bind(this));
     }
 
@@ -483,8 +482,8 @@ class GameEngine {
             `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
 
-    render(alpha) {
-        const renderX = this.playerX + (this.PLAYER_SPEED * alpha * this.TIMESTEP);
+    render() {
+        const renderX = this.playerX + (this.PLAYER_SPEED * this.TIMESTEP);
         this.playerElement.style.transform = `translate3d(${renderX}px, ${this.playerY}px, 0)`;
         this.updateUI();
     }
@@ -518,7 +517,7 @@ class GameEngine {
     }
 
     resetPlayerPosition() {
-        this.playerX = 300;
+        this.playerX = (this.GAME_WIDTH - this.PLAYER_WIDTH) / 2;
         this.playerY = 570;
         this.playerElement.style.transform = `translate3d(${this.playerX}px, ${this.playerY}px, 0)`;
     }
