@@ -37,9 +37,9 @@ class GameEngine {
         this.bulletPool = new BulletPool(this.bulletsContainer, 50);
 
         this.lastPlayerShot = 0;
-        this.playerShootCooldown = 10;
+        this.playerShootCooldown = 350;
 
-        // Semi-fixed timestep parameters.
+        // Semi-fixed timestep parameters for the game loop.
         this.TIMESTEP = 1000 / 60; // 16.7 ms
         this.MAX_FRAMETIME = 250;
         this.lastTick = performance.now();
