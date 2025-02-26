@@ -4,9 +4,10 @@ class GameEngine {
         this.gameContainer = document.getElementById('game');
         this.playerElement = document.getElementById('player');
         this.scoreElement = document.querySelector('.score a');
-        this.waveElement = document.querySelector('.wave a')
+        this.waveElement = document.querySelector('.wave a');
         this.timeElement = document.querySelector('.time');
         this.livesElements = document.querySelectorAll('.life');
+        this.pauseModal = document.getElementById('pause-modal');  // <-- New pause modal reference
 
         this.explosionManager = new Explosion(this.gameContainer);
         this.screenManager = new Screens(this);
@@ -19,7 +20,7 @@ class GameEngine {
             Space: false
         };
 
-        this.gameState = 'lobby'; // Can be 'lobby', 'playing', 'paused', 'gameOver'
+        this.gameState = 'lobby'; // 'lobby', 'playing', 'paused', 'gameOver'
         this.gameTime = 0;
         this.score = 0;
         this.lives = 3;
@@ -34,7 +35,6 @@ class GameEngine {
         this.bulletsContainer = document.createElement('div');
         this.bulletsContainer.id = 'bullets-container';
         this.gameContainer.appendChild(this.bulletsContainer);
-        // Create a bullet pool with a chosen size.
         this.bulletPool = new BulletPool(this.bulletsContainer, 50);
 
         this.lastPlayerShot = 0;
@@ -57,7 +57,7 @@ class GameEngine {
         this.enemiesDefeated = 0;
         this.isWaveTransitioning = false;
 
-        // Sprit Animation
+        // Sprite Animation
         this.spriteFrame = 0;
         this.frameTime = 0;
         this.frameDuration = 100; // Update every 100ms
@@ -73,17 +73,30 @@ class GameEngine {
 
     setupEventListeners() {
         document.addEventListener('keydown', (e) => {
+            // If the game is paused, check for resume/restart keys.
+            if (this.gameState === 'paused') {
+                if (e.code === 'KeyP') {
+                    // Resume game.
+                    this.togglePause();
+                    return;
+                } else if (e.code === 'KeyR') {
+                    // Restart game.
+                    this.resetGame();
+                    this.startGame();
+                    this.hidePauseModal();
+                    return;
+                }
+            }
+
             if (this.keyStates.hasOwnProperty(e.code)) {
                 e.preventDefault();
                 this.keyStates[e.code] = true;
-
-                // Special handling for Space key
                 if (e.code === 'Space') {
                     this.handleSpacePress();
                 }
             }
 
-            if (e.code === 'KeyP') {
+            if (e.code === 'KeyP' && this.gameState === 'playing') {
                 this.togglePause();
             }
             if (e.code === 'KeyL' && this.gameState === 'playing') {
@@ -103,7 +116,6 @@ class GameEngine {
     }
 
     createEnemyBullet(x, y) {
-        // Spawn an enemy bullet from the pool
         this.bulletPool.spawn(x, y, false);
     }
 
@@ -159,7 +171,6 @@ class GameEngine {
         const baseInterval = 2000;
         const baseDuration = 1000;
 
-        // Define formations for each level
         const levelFormations = {
             1: { rows: 2, cols: 5 },
             2: { rows: 2, cols: 7 },
@@ -173,52 +184,43 @@ class GameEngine {
             10: { rows: 7, cols: 8 }
         };
 
-        // Get formation for current level
         const formation = levelFormations[level] || levelFormations[1];
         this.enemyGrid.setFormation(formation.rows, formation.cols);
         this.enemiesPerWave = formation.rows * formation.cols;
 
         switch (level) {
-            case 1: // Beginner level
+            case 1:
                 this.enemyGrid.setContinuousSpeed(baseSpeed * 1.5);
                 break;
-
             case 2:
                 this.enemyGrid.setContinuousSpeed(baseSpeed * 1.7);
                 break;
-
             case 3:
                 this.enemyGrid.setContinuousSpeed(baseSpeed * 1.9);
                 break;
-
             case 4:
                 this.enemyGrid.setContinuousSpeed(baseSpeed * 2.1);
                 break;
-
             case 5:
                 this.enemyGrid.setContinuousSpeed(baseSpeed * 2.3);
                 break;
-
             case 6:
                 this.enemyGrid.setContinuousSpeed(baseSpeed * 2.5);
                 break;
-
             case 7:
                 this.enemyGrid.setContinuousSpeed(baseSpeed * 2.7);
                 break;
         }
 
-        // Adjust enemy shooting intervals
         const totalEnemies = this.enemiesPerWave;
         this.enemyGrid.enemyShootInterval = Math.max(
             400,
             2000 - (level * 150) - (totalEnemies * 5)
         );
 
-        // Adjust drop distance based on formation height
         this.enemyGrid.dropDistance = Math.min(
             25 + (level * 2),
-            65 / formation.rows // smaller drops for taller formations
+            65 / formation.rows
         );
     }
 
@@ -227,18 +229,15 @@ class GameEngine {
         if (now - this.lastPlayerShot >= this.playerShootCooldown) {
             const bulletX = this.playerX + (this.PLAYER_WIDTH / 2) - 10.5;
             const bulletY = this.playerY - 22;
-
             this.bulletPool.spawn(bulletX, bulletY, true);
             this.lastPlayerShot = now;
         }
     }
 
-    // Check and update bullets every frame
     updateBullets(timeStep) {
         const activeBullets = this.bulletPool.getActiveBullets();
 
         for (let bullet of activeBullets) {
-            // Update bullet position and check bounds.
             const inBounds = bullet.update(timeStep);
             if (!inBounds) {
                 this.bulletPool.release(bullet);
@@ -246,47 +245,34 @@ class GameEngine {
             }
 
             if (bullet.isPlayerBullet && this.enemyGrid) {
-                // Cache enemies for performance.
                 const enemies = this.enemyGrid.enemies;
                 for (let j = enemies.length - 1; j >= 0; j--) {
                     const enemy = enemies[j];
                     if (bullet.checkCollision(enemy)) {
-                        // Trigger explosion at enemy position.
                         this.explosionManager.createExplosion(enemy.x, enemy.y);
-
-                        // Update score.
                         const scorePoints = this.calculateScore(enemy.type);
                         this.score += scorePoints;
-
-                        // Remove enemy.
                         this.enemyGrid.removeEnemy(enemy);
-
-                        // Release bullet.
                         this.bulletPool.release(bullet);
-
-                        // If all enemies are cleared, start new wave.
                         if (this.enemyGrid.enemies.length === 0) {
                             setTimeout(() => this.startNewWave(), 0);
                         }
-                        break; // Bullet handled, exit enemy loop.
+                        break;
                     }
                 }
             } else {
-                // For enemy bullets, check collision with the player.
                 if (this.checkBulletPlayerCollision(bullet)) {
-                    // Explosion effect on player.
                     const explosionX = this.playerX + (this.PLAYER_WIDTH / 2) - 24;
                     const explosionY = this.playerY + (this.PLAYER_HEIGHT / 2) - 24;
                     this.explosionManager.createExplosion(explosionX, explosionY);
-
                     this.handlePlayerHit();
                     this.bulletPool.release(bullet);
 
-                    // Flash effect: using a CSS class might be smoother.
-                    this.playerElement.style.filter = 'brightness(2)';
-                    setTimeout(() => {
-                        this.playerElement.style.filter = 'none';
-                    }, 100);
+                    // Flash effect via CSS class.
+                    this.playerElement.classList.add('flash');
+                    this.playerElement.addEventListener('animationend', () => {
+                        this.playerElement.classList.remove('flash');
+                    }, { once: true });
                 }
             }
         }
@@ -316,11 +302,9 @@ class GameEngine {
                 }
                 this.setupLevel(this.currentLevel);
             } else {
-                // For odd-numbered waves, just re-initialize with the same formation
                 this.enemyGrid.initialize();
             }
 
-            // Clear all bullets from the pool visually
             const activeBullets = this.bulletPool.getActiveBullets();
             for (let bullet of activeBullets) {
                 this.bulletPool.release(bullet);
@@ -346,12 +330,9 @@ class GameEngine {
         const now = performance.now();
         let delta = now - this.lastTick;
         this.lastTick = now;
-
-        // Clamp 'delta' in case it gets too large (if the tab was inactive, for instance)
         if (delta > this.MAX_FRAMETIME) {
             delta = this.MAX_FRAMETIME;
         }
-
         this.accumulator += delta;
 
         while (this.accumulator >= this.TIMESTEP) {
@@ -365,16 +346,13 @@ class GameEngine {
     update(timeStep, currentTime) {
         if (this.isPaused) return;
 
-        // Sprite animation
         this.frameTime += timeStep;
         if (this.frameTime >= this.frameDuration) {
             this.spriteFrame = (this.spriteFrame + 1) % 2;
             this.frameTime = 0;
-            // Shift background sprite - each frame is 48px wide
             this.playerElement.style.backgroundPosition = `${this.spriteFrame * -48}px 0`;
         }
 
-        // Player movement
         const movement = this.PLAYER_SPEED * timeStep;
         if (this.keyStates.ArrowLeft) {
             this.playerX = Math.max(0, this.playerX - movement);
@@ -383,20 +361,15 @@ class GameEngine {
             this.playerX = Math.min(this.GAME_WIDTH - this.PLAYER_WIDTH, this.playerX + movement);
         }
 
-        // Shooting
         if (this.keyStates.Space && this.gameState === 'playing') {
             this.playerShoot();
         }
 
-        // Enemies
         if (this.enemyGrid) {
             this.enemyGrid.update(timeStep, currentTime);
         }
 
-        // Bullets
         this.updateBullets(timeStep);
-
-        // Time
         this.gameTime += timeStep;
         this.updateTimeDisplay();
     }
@@ -432,31 +405,41 @@ class GameEngine {
         this.updateUI();
     }
 
-
     updateUI() {
         const now = performance.now();
         if (now - this.lastUIUpdate < 16) return;
-
         this.scoreElement.textContent = `SCORE: ${this.score}`;
         this.waveElement.textContent = `WAVE: ${this.currentWave}`;
         this.livesElements.forEach((life, index) => {
             life.style.opacity = index < this.lives ? 1 : 0.3;
         });
-
         this.lastUIUpdate = now;
     }
 
     togglePause() {
-        if (this.gameState !== 'playing' && this.gameState !== 'paused') return;
-
-        this.isPaused = !this.isPaused;
-        this.gameState = this.isPaused ? 'paused' : 'playing';
-
-        // Reset frame timing on unpause
-        if (!this.isPaused) {
+        if (this.gameState === 'playing') {
+            this.isPaused = true;
+            this.gameState = 'paused';
+            this.showPauseModal();
+        } else if (this.gameState === 'paused') {
+            this.isPaused = false;
+            this.gameState = 'playing';
+            this.hidePauseModal();
             this.lastTick = performance.now();
             this.accumulator = 0;
             this.frameTime = 0;
+        }
+    }
+
+    showPauseModal() {
+        if (this.pauseModal) {
+            this.pauseModal.classList.remove('hidden');
+        }
+    }
+
+    hidePauseModal() {
+        if (this.pauseModal) {
+            this.pauseModal.classList.add('hidden');
         }
     }
 
@@ -487,16 +470,11 @@ class GameEngine {
         this.currentWave = 1;
         this.enemiesDefeated = 0;
         this.explosionManager.clear();
-
-        // Reset key states when resetting
         this.resetKeyStates();
-
-        // Clear all bullets from the pool
         const activeBullets = this.bulletPool.getActiveBullets();
         for (let bullet of activeBullets) {
             this.bulletPool.release(bullet);
         }
-
         this.screenManager.hideScreens();
     }
 }
