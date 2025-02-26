@@ -37,7 +37,7 @@ class GameEngine {
         this.bulletPool = new BulletPool(this.bulletsContainer, 50);
 
         this.lastPlayerShot = 0;
-        this.playerShootCooldown = 350;
+        this.playerShootCooldown = 200;
 
         // Semi-fixed timestep parameters for the game loop.
         this.TIMESTEP = 1000 / 60; // 16.7 ms
@@ -483,7 +483,7 @@ class GameEngine {
     }
 
     render() {
-        const renderX = this.playerX + (this.PLAYER_SPEED * this.TIMESTEP);
+        const renderX = Math.round(this.playerX);
         this.playerElement.style.transform = `translate3d(${renderX}px, ${this.playerY}px, 0)`;
         this.updateUI();
     }
