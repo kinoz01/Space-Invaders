@@ -118,58 +118,12 @@ class EnemyGrid {
         return Object.values(enemiesByColumn);
     }
 
-    setMovementMode(mode) {
-        this.movementMode = mode;
-        this.isMoving = false;
-        this.currentStepProgress = 0;
-        this.lastMoveTime = 0;
-    }
-
     update(timeStep, currentTime) {
         if (this.enemies.length === 0) return;
-
-        if (this.movementMode === 'step') {
-            this.updateStepMovement(timeStep, currentTime);
-        } else {
-            this.updateContinuousMovement(timeStep);
-        }
+        this.updateContinuousMovement(timeStep);
 
         // Add this line to enable enemy shooting
         this.tryEnemyShoot(currentTime);
-    }
-
-    updateStepMovement(timeStep, currentTime) {
-        if (!this.isMoving && (currentTime - this.lastMoveTime >= this.moveInterval)) {
-            this.isMoving = true;
-            this.currentStepProgress = 0;
-            this.lastMoveTime = currentTime;
-
-            if (this.shouldChangeDirection()) {
-                this.changeDirection();
-            }
-        }
-
-        if (this.isMoving) {
-            const moveAmount = (this.moveSpeed * timeStep) * this.direction;
-            this.currentStepProgress += Math.abs(moveAmount);
-
-            this.enemies.forEach(enemy => {
-                enemy.x += moveAmount;
-                enemy.updatePosition();
-            });
-
-            if (this.currentStepProgress >= this.moveStep) {
-                this.isMoving = false;
-
-                const excess = this.currentStepProgress - this.moveStep;
-                const adjustment = excess * this.direction;
-
-                this.enemies.forEach(enemy => {
-                    enemy.x -= adjustment;
-                    enemy.updatePosition();
-                });
-            }
-        }
     }
 
     updateContinuousMovement(timeStep) {

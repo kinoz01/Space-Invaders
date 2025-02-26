@@ -4,12 +4,13 @@ class GameEngine {
         this.gameContainer = document.getElementById('game');
         this.playerElement = document.getElementById('player');
         this.scoreElement = document.querySelector('.score a');
+        this.waveElement = document.querySelector('.wave a')
         this.timeElement = document.querySelector('.time');
         this.livesElements = document.querySelectorAll('.life');
 
         this.explosionManager = new Explosion(this.gameContainer);
         this.screenManager = new Screens(this);
-        
+
         // Gameplay parameters.
         this.enemyGrid = null;
         this.keyStates = {
@@ -37,7 +38,7 @@ class GameEngine {
         this.bulletPool = new BulletPool(this.bulletsContainer, 50);
 
         this.lastPlayerShot = 0;
-        this.playerShootCooldown = 200;
+        this.playerShootCooldown = 350;
 
         // Semi-fixed timestep parameters for the game loop.
         this.TIMESTEP = 1000 / 60; // 16.7 ms
@@ -179,57 +180,31 @@ class GameEngine {
 
         switch (level) {
             case 1: // Beginner level
-                this.enemyGrid.setMovementMode('step');
-                this.enemyGrid.setStepParameters(baseSpeed, baseStepDistance, baseInterval, baseDuration);
-                break;
-
-            case 2:
-                this.enemyGrid.setMovementMode('step');
-                this.enemyGrid.setStepParameters(baseSpeed * 1.4, baseStepDistance,
-                    baseInterval - 300, baseDuration - 100);
-                break;
-
-            case 3:
-                this.enemyGrid.setMovementMode('continuous');
                 this.enemyGrid.setContinuousSpeed(baseSpeed * 1.5);
                 break;
 
-            case 4:
-                this.enemyGrid.setMovementMode('continuous');
+            case 2:
                 this.enemyGrid.setContinuousSpeed(baseSpeed * 1.7);
                 break;
 
+            case 3:
+                this.enemyGrid.setContinuousSpeed(baseSpeed * 1.9);
+                break;
+
+            case 4:
+                this.enemyGrid.setContinuousSpeed(baseSpeed * 2.1);
+                break;
+
             case 5:
-                this.enemyGrid.setMovementMode('step');
-                this.enemyGrid.setStepParameters(baseSpeed * 1.8, baseStepDistance + 10,
-                    baseInterval - 600, baseDuration - 300);
+                this.enemyGrid.setContinuousSpeed(baseSpeed * 2.3);
                 break;
 
             case 6:
-                this.enemyGrid.setMovementMode('continuous');
-                this.enemyGrid.setContinuousSpeed(baseSpeed * 2.0);
+                this.enemyGrid.setContinuousSpeed(baseSpeed * 2.5);
                 break;
 
             case 7:
-                this.enemyGrid.setMovementMode('step');
-                this.enemyGrid.setStepParameters(baseSpeed * 2.2, baseStepDistance + 15,
-                    baseInterval - 800, baseDuration - 400);
-                break;
-
-            case 8:
-                this.enemyGrid.setMovementMode('continuous');
-                this.enemyGrid.setContinuousSpeed(baseSpeed * 2.4);
-                break;
-
-            case 9:
-                this.enemyGrid.setMovementMode('step');
-                this.enemyGrid.setStepParameters(baseSpeed * 2.6, baseStepDistance + 20,
-                    baseInterval - 1000, baseDuration - 500);
-                break;
-
-            case 10: // Final level - maximum challenge
-                this.enemyGrid.setMovementMode('continuous');
-                this.enemyGrid.setContinuousSpeed(baseSpeed * 3.0);
+                this.enemyGrid.setContinuousSpeed(baseSpeed * 2.7);
                 break;
         }
 
@@ -261,84 +236,53 @@ class GameEngine {
     // Check and update bullets every frame
     updateBullets(timeStep) {
         const activeBullets = this.bulletPool.getActiveBullets();
-        for (let bullet of activeBullets) {
-            const isInBounds = bullet.update(timeStep);
 
-            // If bullet goes out of bounds, release it back to the pool
-            if (!isInBounds) {
+        for (let bullet of activeBullets) {
+            // Update bullet position and check bounds.
+            const inBounds = bullet.update(timeStep);
+            if (!inBounds) {
                 this.bulletPool.release(bullet);
                 continue;
             }
 
-            // Handle player bullets hitting enemies
             if (bullet.isPlayerBullet && this.enemyGrid) {
-                for (let j = this.enemyGrid.enemies.length - 1; j >= 0; j--) {
-                    const enemy = this.enemyGrid.enemies[j];
+                // Cache enemies for performance.
+                const enemies = this.enemyGrid.enemies;
+                for (let j = enemies.length - 1; j >= 0; j--) {
+                    const enemy = enemies[j];
                     if (bullet.checkCollision(enemy)) {
-                        // Explosion at enemy position
+                        // Trigger explosion at enemy position.
                         this.explosionManager.createExplosion(enemy.x, enemy.y);
 
-                        // Score
+                        // Update score.
                         const scorePoints = this.calculateScore(enemy.type);
                         this.score += scorePoints;
 
-                        // Remove enemy
+                        // Remove enemy.
                         this.enemyGrid.removeEnemy(enemy);
 
-                        // Release bullet
+                        // Release bullet.
                         this.bulletPool.release(bullet);
 
-                        // Show score popup
-                        const scoreText = document.createElement('div');
-                        scoreText.className = 'score-popup';
-                        scoreText.textContent = `+${scorePoints}`;
-                        scoreText.style.cssText = `
-                            position: absolute;
-                            left: ${enemy.x + 24}px;
-                            top: ${enemy.y}px;
-                            color: white;
-                            font-family: var(--font-primary);
-                            font-size: 12px;
-                            pointer-events: none;
-                            z-index: 1000;
-                            opacity: 1;
-                            transform: translateY(0);
-                        `;
-                        this.gameContainer.appendChild(scoreText);
-
-                        requestAnimationFrame(() => {
-                            scoreText.style.opacity = '0';
-                            scoreText.style.transform = 'translateY(-20px)';
-                        });
-                        setTimeout(() => {
-                            if (scoreText.parentNode) {
-                                this.gameContainer.removeChild(scoreText);
-                            }
-                        }, 500);
-
-                        // Check if wave is cleared
+                        // If all enemies are cleared, start new wave.
                         if (this.enemyGrid.enemies.length === 0) {
                             setTimeout(() => this.startNewWave(), 0);
                         }
-                        break; // break out of the enemy loop
+                        break; // Bullet handled, exit enemy loop.
                     }
                 }
-            }
-            else {
-                // Enemy bullets hitting the player
+            } else {
+                // For enemy bullets, check collision with the player.
                 if (this.checkBulletPlayerCollision(bullet)) {
-                    // Explosion effect on player
-                    this.explosionManager.createExplosion(
-                        this.playerX + (this.PLAYER_WIDTH / 2) - 24,
-                        this.playerY + (this.PLAYER_HEIGHT / 2) - 24
-                    );
+                    // Explosion effect on player.
+                    const explosionX = this.playerX + (this.PLAYER_WIDTH / 2) - 24;
+                    const explosionY = this.playerY + (this.PLAYER_HEIGHT / 2) - 24;
+                    this.explosionManager.createExplosion(explosionX, explosionY);
 
                     this.handlePlayerHit();
-
-                    // Release bullet
                     this.bulletPool.release(bullet);
 
-                    // Hit flash effect
+                    // Flash effect: using a CSS class might be smoother.
                     this.playerElement.style.filter = 'brightness(2)';
                     setTimeout(() => {
                         this.playerElement.style.filter = 'none';
@@ -490,11 +434,11 @@ class GameEngine {
 
 
     updateUI() {
-        const now = performance.now();      
+        const now = performance.now();
         if (now - this.lastUIUpdate < 16) return;
 
         this.scoreElement.textContent = `SCORE: ${this.score}`;
-        document.querySelector('.wave a').textContent = `WAVE: ${this.currentWave}`;
+        this.waveElement.textContent = `WAVE: ${this.currentWave}`;
         this.livesElements.forEach((life, index) => {
             life.style.opacity = index < this.lives ? 1 : 0.3;
         });
