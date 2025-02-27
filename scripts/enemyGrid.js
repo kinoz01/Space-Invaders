@@ -161,13 +161,6 @@ class EnemyGrid {
         });
     }
 
-    setStepParameters(speed, step, interval, duration) {
-        this.moveSpeed = speed;
-        this.moveStep = step;
-        this.moveInterval = interval;
-        this.moveDuration = duration;
-    }
-
     setContinuousSpeed(speed) {
         this.continuousSpeed = speed;
     }

@@ -80,10 +80,13 @@ class GameEngine {
                     this.togglePause();
                     return;
                 } else if (e.code === 'KeyR') {
-                    // Restart game.
-                    this.resetGame();
-                    this.startGame();
+                    // Restart game: cancel any animation frame, hide modal, and ensure pause is cleared.
+                    cancelAnimationFrame(this.rafHandle);
                     this.hidePauseModal();
+                    this.isPaused = false;         // Clear pause flag
+                    this.gameState = 'lobby';        // Reset state to lobby before starting new game
+                    this.resetGame(true);
+                    this.startGame();
                     return;
                 }
             }
@@ -167,21 +170,15 @@ class GameEngine {
 
     setupLevel(level) {
         const baseSpeed = 0.03;
-        const baseStepDistance = 20;
-        const baseInterval = 2000;
-        const baseDuration = 1000;
 
         const levelFormations = {
-            1: { rows: 2, cols: 5 },
-            2: { rows: 2, cols: 7 },
-            3: { rows: 3, cols: 6 },
-            4: { rows: 3, cols: 7 },
-            5: { rows: 4, cols: 6 },
-            6: { rows: 4, cols: 7 },
-            7: { rows: 5, cols: 6 },
-            8: { rows: 5, cols: 7 },
-            9: { rows: 6, cols: 7 },
-            10: { rows: 7, cols: 8 }
+            1: { rows: 3, cols: 7 },
+            2: { rows: 4, cols: 6 },
+            3: { rows: 4, cols: 7 },
+            4: { rows: 5, cols: 6 },
+            5: { rows: 5, cols: 7 },
+            6: { rows: 6, cols: 7 },
+            7: { rows: 7, cols: 8 }
         };
 
         const formation = levelFormations[level] || levelFormations[1];
@@ -296,7 +293,7 @@ class GameEngine {
 
             if (this.currentWave % 2 === 0) {
                 this.currentLevel++;
-                if (this.currentLevel > 10) {
+                if (this.currentLevel > 7) {
                     this.victoryScreen();
                     return;
                 }
