@@ -202,15 +202,6 @@ class GameEngine {
             case 4:
                 this.enemyGrid.setContinuousSpeed(baseSpeed * 6);
                 break;
-            case 5:
-                this.enemyGrid.setContinuousSpeed(baseSpeed * 2.3);
-                break;
-            case 6:
-                this.enemyGrid.setContinuousSpeed(baseSpeed * 2.5);
-                break;
-            case 7:
-                this.enemyGrid.setContinuousSpeed(baseSpeed * 2.7);
-                break;
         }
 
         const totalEnemies = this.enemiesPerWave;
