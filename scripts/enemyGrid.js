@@ -1,8 +1,7 @@
 class EnemyGrid {
-    constructor(movementMode = 'step') {
+    constructor() {
         this.enemies = [];
         this.container = document.getElementById('enemies-container');
-        this.movementMode = movementMode;
 
         this.moveSpeed = 0.03;
         this.moveStep = 20;

@@ -7,12 +7,6 @@ class Enemy {
         this.type = type;
         this.element = this.createEnemyElement();
         this.direction = 1;
-        this.lastShot = 0;
-        this.shootCooldown = 2000 + Math.random() * 3000; // Random cooldown between 2-5 seconds
-    }
-
-    canShoot(currentTime) {
-        return currentTime - this.lastShot >= this.shootCooldown;
     }
 
     createEnemyElement() {

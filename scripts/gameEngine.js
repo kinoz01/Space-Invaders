@@ -7,7 +7,7 @@ class GameEngine {
         this.waveElement = document.querySelector('.wave a');
         this.timeElement = document.querySelector('.time');
         this.livesElements = document.querySelectorAll('.life');
-        this.pauseModal = document.getElementById('pause-modal');  // <-- New pause modal reference
+        this.pauseModal = document.getElementById('pause-modal');
 
         this.explosionManager = new Explosion(this.gameContainer);
         this.screenManager = new Screens(this);
@@ -131,6 +131,10 @@ class GameEngine {
                 this.resetGame();
                 this.startGame();
                 break;
+            case 'victory':
+                this.resetGame();
+                this.startGame();
+                break;
         }
     }
 
@@ -160,7 +164,7 @@ class GameEngine {
         this.enemiesDefeated = 0;
 
         // Create and reset enemy grid
-        this.enemyGrid = new EnemyGrid('step');
+        this.enemyGrid = new EnemyGrid();
         this.enemyGrid.reset();
         this.setupLevel(this.currentLevel);
 
@@ -187,16 +191,16 @@ class GameEngine {
 
         switch (level) {
             case 1:
-                this.enemyGrid.setContinuousSpeed(baseSpeed * 1.5);
+                this.enemyGrid.setContinuousSpeed(baseSpeed * 3);
                 break;
             case 2:
-                this.enemyGrid.setContinuousSpeed(baseSpeed * 1.7);
+                this.enemyGrid.setContinuousSpeed(baseSpeed * 4);
                 break;
             case 3:
-                this.enemyGrid.setContinuousSpeed(baseSpeed * 1.9);
+                this.enemyGrid.setContinuousSpeed(baseSpeed * 5);
                 break;
             case 4:
-                this.enemyGrid.setContinuousSpeed(baseSpeed * 2.1);
+                this.enemyGrid.setContinuousSpeed(baseSpeed * 6);
                 break;
             case 5:
                 this.enemyGrid.setContinuousSpeed(baseSpeed * 2.3);
@@ -293,7 +297,7 @@ class GameEngine {
 
             if (this.currentWave % 2 === 0) {
                 this.currentLevel++;
-                if (this.currentLevel > 7) {
+                if (this.currentLevel > 4) {
                     this.victoryScreen();
                     return;
                 }
