@@ -2,11 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Space Invaders Game - A classic arcade shooter">
 
   <!-- Browser UI elements' -->
-  <meta name="theme-color" content="#111111">
   <link rel="icon" href="assets/favicon.svg" type="image/x-icon">
   
   <!-- Preconnect for Performance -->
@@ -16,7 +14,7 @@
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="style.css">
   <title>Space Invaders</title>
 </head>
 <body>
@@ -28,6 +26,7 @@
     <img id="lobby-logo" src="assets/Title.png" alt="Game Logo">
     <div id="lobby-text">Press SPACE to Start</div>
     <img id="lobby-image" src="assets/HowToPlay.png" alt="How to Play">
+    <div style="color: #fff; font-size: small;">P to Pause</div>
   </div>
 
   <div id="game">
@@ -65,9 +64,9 @@
     <div class="screen-content">
       <img src="assets/Victory.png" alt="Victory!" class="result-image">
       <h2>Congratulations!</h2>
-      <br><div class="stats">
+      <div class="stats"><br>
         <p>Final Score: <span class="final-score">0</span></p>
-        <p>Time: <span class="final-time">0:00</span></p>
+        <br><p>Time: <span class="final-time">0:00</span></p>
       </div>
       <button class="restart-btn">Play Again</button>
     </div>
@@ -84,12 +83,12 @@
     </div>
   </div>
 
-  <script src="/scripts/explosion.js"></script>
-  <script src="/scripts/enemy.js"></script>
-  <script src="/scripts/bullet.js"></script>
-  <script src="/scripts/enemyGrid.js"></script>
-  <script src="/scripts/screens.js"></script>
-  <script src="/scripts/gameEngine.js"></script>
+  <script src="scripts/explosion.js"></script>
+  <script src="scripts/enemy.js"></script>
+  <script src="scripts/bullet.js"></script>
+  <script src="scripts/enemyGrid.js"></script>
+  <script src="scripts/screens.js"></script>
+  <script src="scripts/gameEngine.js"></script>
   <script>
     // Initialize game instance
     const game = new GameEngine();

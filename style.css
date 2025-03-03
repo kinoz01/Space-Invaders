@@ -133,7 +133,7 @@ body {
 }
 
 #lobby-image {
-    margin-top: 70px;
+    margin-top: 120px;
     z-index: var(--z-game);
 }
 
@@ -409,42 +409,6 @@ body {
     will-change: transform, opacity;
 }
 
-/* Add better breakpoints */
-@media (max-width: 660px) {
-    :root {
-        --game-width: 100vw;
-        --game-height: 100vh;
-        --header-height: 28px;
-        /* Slightly smaller for mobile */
-        --font-size-normal: 10px;
-        /* Smaller font for mobile */
-    }
-
-    .header {
-        width: calc(100% - 16px);
-        left: 8px;
-        padding: 0 10px;
-    }
-
-    .score img {
-        width: 16px;
-        height: 16px;
-    }
-
-    .lives img {
-        width: 24px;
-        height: 24px;
-    }
-}
-
-/* Add landscape mode optimization */
-@media (max-height: 500px) and (orientation: landscape) {
-    .header {
-        top: 2px;
-        height: 26px;
-    }
-}
-
 /* Victory and game-over screens */
 .game-screen {
     position: fixed;
@@ -517,7 +481,7 @@ body {
     display: none;
 }
 
-.pause-content h2{
+.pause-content h2 {
     text-align: center;
     animation: pulse 2s infinite;
 }

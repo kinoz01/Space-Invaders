@@ -8,16 +8,12 @@ class Screens {
     }
 
     bindEvents() {
-        this.victoryScreen.querySelector('.restart-btn').addEventListener('click', () => {
-            this.hideScreens();
-            this.gameEngine.resetGame();
-            this.gameEngine.startGame();
-        });
-        
-        this.gameOverScreen.querySelector('.restart-btn').addEventListener('click', () => {
-            this.hideScreens();
-            this.gameEngine.resetGame();
-            this.gameEngine.startGame();
+        document.body.addEventListener('click', (event) => {
+            if (event.target.matches('.restart-btn')) {
+                this.hideScreens();
+                this.gameEngine.resetGame();
+                this.gameEngine.startGame();    
+            }
         });
     }
 

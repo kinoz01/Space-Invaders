@@ -20,7 +20,7 @@ class GameEngine {
             Space: false
         };
 
-        this.gameState = 'lobby'; // 'lobby', 'playing', 'paused', 'gameOver'
+        this.gameState = 'lobby'; // 'lobby', 'playing', 'paused', 'gameOver', 'victory'
         this.gameTime = 0;
         this.score = 0;
         this.lives = 3;
@@ -103,9 +103,12 @@ class GameEngine {
                 this.togglePause();
             }
             if (e.code === 'KeyL' && this.gameState === 'playing') {
-                if (this.currentLevel < 10) {
-                    this.currentLevel++;
-                    this.setupLevel(this.currentLevel);
+                if (this.currentLevel < 4) {
+                    this.currentWave++;
+                    if (this.currentWave % 2 == 0) {
+                        this.currentLevel++
+                        this.setupLevel(this.currentLevel);
+                    }
                 }
             }
         });
@@ -123,18 +126,11 @@ class GameEngine {
     }
 
     handleSpacePress() {
-        switch (this.gameState) {
-            case 'lobby':
-                this.startGame();
-                break;
-            case 'gameOver':
-                this.resetGame();
-                this.startGame();
-                break;
-            case 'victory':
-                this.resetGame();
-                this.startGame();
-                break;
+        if (this.gameState === 'gameOver' ||
+            this.gameState === 'lobby' ||
+            this.gameState === 'victory') {
+            this.resetGame();
+            this.startGame();
         }
     }
 
@@ -147,7 +143,6 @@ class GameEngine {
     optimizePerformance() {
         this.playerElement.style.transform = 'translateZ(0)';
         this.playerElement.style.willChange = 'transform';
-        this.gameContainer.style.willChange = 'contents';
     }
 
     startGame() {
@@ -156,19 +151,12 @@ class GameEngine {
         this.isRunning = true;
         this.gameState = 'playing';
         this.lastTick = performance.now();
-        this.gameTime = 0;
-        this.score = 0;
-        this.lives = 3;
-        this.currentLevel = 1;
-        this.currentWave = 1;
-        this.enemiesDefeated = 0;
 
         // Create and reset enemy grid
         this.enemyGrid = new EnemyGrid();
         this.enemyGrid.reset();
         this.setupLevel(this.currentLevel);
 
-        this.resetKeyStates();
         this.runGameLoop();
     }
 
@@ -181,8 +169,6 @@ class GameEngine {
             3: { rows: 4, cols: 7 },
             4: { rows: 5, cols: 6 },
             5: { rows: 5, cols: 7 },
-            6: { rows: 6, cols: 7 },
-            7: { rows: 7, cols: 8 }
         };
 
         const formation = levelFormations[level] || levelFormations[1];
@@ -202,16 +188,19 @@ class GameEngine {
             case 4:
                 this.enemyGrid.setContinuousSpeed(baseSpeed * 6);
                 break;
+            case 5:
+                this.enemyGrid.setContinuousSpeed(baseSpeed * 7);
+                break;
         }
 
         const totalEnemies = this.enemiesPerWave;
         this.enemyGrid.enemyShootInterval = Math.max(
             400,
-            2000 - (level * 150) - (totalEnemies * 5)
+            1000 - (level * 150) - (totalEnemies * 5)
         );
 
         this.enemyGrid.dropDistance = Math.min(
-            25 + (level * 2),
+            25 + (level * 4),
             65 / formation.rows
         );
     }
@@ -288,8 +277,9 @@ class GameEngine {
 
             if (this.currentWave % 2 === 0) {
                 this.currentLevel++;
-                if (this.currentLevel > 4) {
+                if (this.currentLevel > 5) {
                     this.victoryScreen();
+                    this.isWaveTransitioning = false;
                     return;
                 }
                 this.setupLevel(this.currentLevel);
@@ -370,7 +360,7 @@ class GameEngine {
         return (
             bullet.x < this.playerX + this.PLAYER_WIDTH &&
             bullet.x + bullet.width > this.playerX &&
-            bullet.y < this.playerY + 45 &&
+            bullet.y < this.playerY + this.PLAYER_HEIGHT &&
             bullet.y + bullet.height > this.playerY
         );
     }
@@ -449,18 +439,18 @@ class GameEngine {
     }
 
     resetGame() {
+        this.gameTime = 0;
         this.score = 0;
         this.lives = 3;
-        this.gameTime = 0;
         this.currentLevel = 1;
+        this.currentWave = 1;
+        this.enemiesDefeated = 0;
         this.resetPlayerPosition();
         this.updateUI();
         this.lobby.style.display = 'flex';
         this.gameContainer.style.display = 'none';
         this.isRunning = false;
         this.gameState = 'lobby';
-        this.currentWave = 1;
-        this.enemiesDefeated = 0;
         this.explosionManager.clear();
         this.resetKeyStates();
         const activeBullets = this.bulletPool.getActiveBullets();

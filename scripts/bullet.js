@@ -50,17 +50,17 @@ class Bullet {
     }
 
     isInBounds() {
-        // Adjust your game boundaries as needed (currently 0 to 640)
+        // Current game boundaries are from 0 to 640
         return this.y > -this.height && this.y < 640;
     }
 
-    // Check collision with a target that has x, y, width, height
+    // Check Bullet-Target collision/overlapping
     checkCollision(target) {
         return (
-            this.x < target.x + target.width &&
-            this.x + this.width > target.x &&
-            this.y < target.y + target.height &&
-            this.y + this.height > target.y
+            this.x < target.x + target.width && // left edge of B before right edge of T
+            this.x + this.width > target.x && // right edge of B after left edge of T
+            this.y < target.y + target.height && // top edge of B above bottom edge of T
+            this.y + this.height > target.y // bottom edge of B below top edge of T
         );
     }
 }
