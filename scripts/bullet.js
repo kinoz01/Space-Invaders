@@ -103,4 +103,3 @@ class BulletPool {
         return this.bullets.filter((b) => b.active);
     }
 }
-

@@ -88,16 +88,14 @@ class EnemyGrid {
         // Randomly select one bottom enemy to shoot
         const randomEnemy = bottomEnemies[Math.floor(Math.random() * bottomEnemies.length)];
 
-        if (randomEnemy.canShoot(currentTime)) {
-            randomEnemy.lastShot = currentTime;
-            this.lastEnemyShot = currentTime;
+        randomEnemy.lastShot = currentTime;
+        this.lastEnemyShot = currentTime;
 
-            // Create bullet at enemy position
-            if (window.game) {
-                const bulletX = randomEnemy.x + (randomEnemy.width / 2) - 10.5;
-                const bulletY = randomEnemy.y + randomEnemy.height;
-                game.createEnemyBullet(bulletX, bulletY);
-            }
+        // Create bullet at enemy position
+        if (window.game) {
+            const bulletX = randomEnemy.x + (randomEnemy.width / 2) - 10.5;
+            const bulletY = randomEnemy.y + randomEnemy.height;
+            game.createEnemyBullet(bulletX, bulletY);
         }
     }
 
