@@ -3,7 +3,7 @@ class EnemyGrid {
         this.enemies = [];
         this.container = document.getElementById('enemies-container');
 
-        this.moveStep = 20;
+        this.moveStep = 20; // Grid left/right margins
         this.moveInterval = 2000;
         this.moveDuration = 1000;
         this.continuousSpeed = 0.05;

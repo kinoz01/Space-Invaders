@@ -158,12 +158,12 @@ class GameEngine {
 
         const levelFormations = {
             1: { rows: 3, cols: 7 },
-            2: { rows: 4, cols: 6 },
-            3: { rows: 4, cols: 7 },
+            2: { rows: 4, cols: 5 },
+            3: { rows: 3, cols: 9 },
             4: { rows: 5, cols: 6 },
             5: { rows: 5, cols: 7 },
         };
-        this.enemyGrid.dualShooting = (level === 4);
+        this.enemyGrid.dualShooting = (level === 4 || level === 3);
 
         const formation = levelFormations[level] || levelFormations[1];
         this.enemyGrid.setFormation(formation.rows, formation.cols);
@@ -177,7 +177,7 @@ class GameEngine {
                 this.enemyGrid.setContinuousSpeed(baseSpeed * 4);
                 break;
             case 3:
-                this.enemyGrid.setContinuousSpeed(baseSpeed * 5);
+                this.enemyGrid.setContinuousSpeed(baseSpeed * 2);
                 break;
             case 4:
                 this.enemyGrid.setContinuousSpeed(baseSpeed * 6);
