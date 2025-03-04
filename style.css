@@ -163,19 +163,13 @@ body {
     filter: drop-shadow(0 0 5px var(--glow-primary));
     transform-origin: center center;
     image-rendering: pixelated;
-    /* Remove the CSS animation */
+    animation: playerSpriteAnimation 0.2s steps(2) infinite;
 }
 
-@keyframes playerThrust {
-    from {
-        background-position: 0 0;
-    }
-
-    to {
-        background-position: -96px 0;
-    }
-
-    /* Adjusted for new size */
+/* Sprite Animation (Switches Frames) */
+@keyframes playerSpriteAnimation {
+    0% { background-position: 0px 0; }  /* First frame */
+    100% { background-position: -96px 0; } /* Second frame */
 }
 
 /* Header and UI Elements */

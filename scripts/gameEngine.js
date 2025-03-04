@@ -57,11 +57,6 @@ class GameEngine {
         this.enemiesDefeated = 0;
         this.isWaveTransitioning = false;
 
-        // Sprite Animation
-        this.spriteFrame = 0;
-        this.frameTime = 0;
-        this.frameDuration = 100; // Update every 100ms
-
         this.init();
     }
 
@@ -326,13 +321,6 @@ class GameEngine {
     update(timeStep, currentTime) {
         if (this.isPaused) return;
 
-        this.frameTime += timeStep; // accumulate real time between frames.
-        if (this.frameTime >= this.frameDuration) {
-            this.spriteFrame = (this.spriteFrame + 1) % 2;
-            this.frameTime = 0;
-            this.playerElement.style.backgroundPosition = `${this.spriteFrame * -48}px 0`;
-        }
-
         const movement = this.PLAYER_SPEED * timeStep;
         if (this.keyStates.ArrowLeft) {
             this.playerX = Math.max(0, this.playerX - movement);
@@ -379,6 +367,7 @@ class GameEngine {
             `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
 
+    // Update player position and gamePlay elements.
     render() {
         const renderX = Math.round(this.playerX);
         this.playerElement.style.transform = `translate3d(${renderX}px, ${this.playerY}px, 0)`;
