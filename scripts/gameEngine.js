@@ -83,9 +83,9 @@ class GameEngine {
                     // Restart game: cancel any animation frame, hide modal, and ensure pause is cleared.
                     cancelAnimationFrame(this.rafHandle);
                     this.hidePauseModal();
-                    this.isPaused = false;         // Clear pause flag
+                    this.isPaused = false;           // Clear pause flag
                     this.gameState = 'lobby';        // Reset state to lobby before starting new game
-                    this.resetGame(true);
+                    this.resetGame();
                     this.startGame();
                     return;
                 }
@@ -103,7 +103,7 @@ class GameEngine {
                 this.togglePause();
             }
             if (e.code === 'KeyL' && this.gameState === 'playing') {
-                if (this.currentLevel < 4) {
+                if (this.currentLevel < 5) {
                     this.currentWave++;
                     if (this.currentWave % 2 == 0) {
                         this.currentLevel++
@@ -154,9 +154,7 @@ class GameEngine {
 
         // Create and reset enemy grid
         this.enemyGrid = new EnemyGrid();
-        this.enemyGrid.reset();
         this.setupLevel(this.currentLevel);
-
         this.runGameLoop();
     }
 
@@ -328,7 +326,7 @@ class GameEngine {
     update(timeStep, currentTime) {
         if (this.isPaused) return;
 
-        this.frameTime += timeStep;
+        this.frameTime += timeStep; // accumulate real time between frames.
         if (this.frameTime >= this.frameDuration) {
             this.spriteFrame = (this.spriteFrame + 1) % 2;
             this.frameTime = 0;

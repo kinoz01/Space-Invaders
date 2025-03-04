@@ -6,7 +6,6 @@ class Enemy {
         this.height = 48;
         this.type = type;
         this.element = this.createEnemyElement();
-        this.direction = 1;
     }
 
     createEnemyElement() {

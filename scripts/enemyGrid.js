@@ -3,18 +3,12 @@ class EnemyGrid {
         this.enemies = [];
         this.container = document.getElementById('enemies-container');
 
-        this.moveSpeed = 0.03;
         this.moveStep = 20;
         this.moveInterval = 2000;
         this.moveDuration = 1000;
-        this.lastMoveTime = 0;
-        this.isMoving = false;
-        this.currentStepProgress = 0;
-
-        this.continuousSpeed = 0.03;
+        this.continuousSpeed = 0.05;
         this.dropDistance = 30;
         this.direction = 1;
-        // Make these configurable
         this.rows = 3;
         this.cols = 7;
         this.padding = 10;
@@ -64,16 +58,6 @@ class EnemyGrid {
         };
         this.padding = padding;
         this.initialize();
-    }
-
-    // Add this method to EnemyGrid class to properly reset speeds:
-    reset() {
-        this.moveSpeed = 0.03;
-        this.continuousSpeed = 0.05;
-        this.direction = 1;
-        this.lastMoveTime = 0;
-        this.isMoving = false;
-        this.currentStepProgress = 0;
     }
 
     tryEnemyShoot(currentTime) {
