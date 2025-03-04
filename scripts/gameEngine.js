@@ -203,7 +203,7 @@ class GameEngine {
         const now = performance.now();
         if (now - this.lastPlayerShot >= this.playerShootCooldown) {
             const bulletX = this.playerX + (this.PLAYER_WIDTH / 2) - 10.5;
-            const bulletY = this.playerY - 22;
+            const bulletY = this.playerY - 20;
             this.bulletPool.spawn(bulletX, bulletY, true);
             this.lastPlayerShot = now;
         }

@@ -7,7 +7,7 @@ class Bullet {
         this.height = 22;
         this.speed = -0.5;         // Default speed for a player's bullet
         this.isPlayerBullet = true;
-        this.active = false;       // Managed by the bullet pool
+        this.active = false;
 
         // Pre-create the DOM element
         this.element = document.createElement('div');
