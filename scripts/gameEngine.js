@@ -190,7 +190,7 @@ class GameEngine {
         const totalEnemies = this.enemiesPerWave;
         this.enemyGrid.enemyShootInterval = Math.max(
             400,
-            1000 - (level * 300) - (totalEnemies * 5)
+            1000 - (level * 100) - (totalEnemies * 5)
         );
 
         this.enemyGrid.dropDistance = Math.min(
