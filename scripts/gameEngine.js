@@ -163,6 +163,7 @@ class GameEngine {
             4: { rows: 5, cols: 6 },
             5: { rows: 5, cols: 7 },
         };
+        this.enemyGrid.dualShooting = (level === 4);
 
         const formation = levelFormations[level] || levelFormations[1];
         this.enemyGrid.setFormation(formation.rows, formation.cols);
@@ -189,7 +190,7 @@ class GameEngine {
         const totalEnemies = this.enemiesPerWave;
         this.enemyGrid.enemyShootInterval = Math.max(
             400,
-            1000 - (level * 150) - (totalEnemies * 5)
+            1000 - (level * 300) - (totalEnemies * 5)
         );
 
         this.enemyGrid.dropDistance = Math.min(

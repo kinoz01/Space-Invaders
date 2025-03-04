@@ -12,6 +12,7 @@ class EnemyGrid {
         this.rows = 3;
         this.cols = 7;
         this.padding = 10;
+        this.dualShooting = false;
 
         // Add formation tracking
         this.currentFormation = {
@@ -65,21 +66,20 @@ class EnemyGrid {
             return;
         }
 
-        // Get bottom-most enemies (they're the only ones that can shoot)
         const bottomEnemies = this.getBottomEnemies();
         if (bottomEnemies.length === 0) return;
 
-        // Randomly select one bottom enemy to shoot
-        const randomEnemy = bottomEnemies[Math.floor(Math.random() * bottomEnemies.length)];
+        let numShots = this.dualShooting ? 2 : 1; // Allow two shots if enabled
+        for (let i = 0; i < numShots && bottomEnemies.length > 0; i++) {
+            const randomEnemy = bottomEnemies.splice(Math.floor(Math.random() * bottomEnemies.length), 1)[0];
+            randomEnemy.lastShot = currentTime;
+            this.lastEnemyShot = currentTime;
 
-        randomEnemy.lastShot = currentTime;
-        this.lastEnemyShot = currentTime;
-
-        // Create bullet at enemy position
-        if (window.game) {
-            const bulletX = randomEnemy.x + (randomEnemy.width / 2) - 10.5;
-            const bulletY = randomEnemy.y + randomEnemy.height;
-            game.createEnemyBullet(bulletX, bulletY);
+            if (window.game) {
+                const bulletX = randomEnemy.x + (randomEnemy.width / 2) - 10.5;
+                const bulletY = randomEnemy.y + randomEnemy.height;
+                game.createEnemyBullet(bulletX, bulletY);
+            }
         }
     }
 
