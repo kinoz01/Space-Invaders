@@ -103,7 +103,7 @@ class EnemyGrid {
         if (this.enemies.length === 0) return;
         this.updateContinuousMovement(timeStep);
 
-        // Add this line to enable enemy shooting
+        // Enable enemy shooting
         this.tryEnemyShoot(currentTime);
     }
 

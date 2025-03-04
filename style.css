@@ -168,8 +168,16 @@ body {
 
 /* Sprite Animation (Switches Frames) */
 @keyframes playerSpriteAnimation {
-    0% { background-position: 0px 0; }  /* First frame */
-    100% { background-position: -96px 0; } /* Second frame */
+
+    /* First frame */
+    0% {
+        background-position: 0px 0;
+    }
+
+    /* Second frame (We do re-scale in: background-size)*/
+    100% {
+        background-position: -96px 0;
+    }
 }
 
 /* Header and UI Elements */
@@ -268,17 +276,6 @@ body {
     filter: drop-shadow(0 0 2px var(--glow-primary));
 }
 
-/* Animations */
-@keyframes moveBackground {
-    from {
-        background-position: 0 0;
-    }
-
-    to {
-        background-position: -640px 0;
-    }
-}
-
 @keyframes pulse {
     0% {
         opacity: 1;
@@ -359,24 +356,6 @@ body {
         transform: scale(0.8);
         opacity: 0;
     }
-}
-
-@keyframes scorePopup {
-    0% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    100% {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-}
-
-.score-popup {
-    animation: scorePopup 0.5s ease-out forwards;
-    text-shadow: 0 0 4px rgba(255, 255, 255, 0.7);
-    will-change: transform, opacity;
 }
 
 /* Victory and game-over screens */
