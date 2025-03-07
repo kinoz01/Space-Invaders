@@ -94,9 +94,9 @@ class GameEngine {
                 }
             }
         });
-        this.bgMusic.volume = 0.8;
+        this.bgMusic.volume = 1;
         this.shootSound.volume = 0.8;
-        this.explosionSound.volume = 0.7;
+        this.explosionSound.volume = 0.4;
     }
 
     // Setup key up/down buttons.

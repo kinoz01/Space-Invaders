@@ -103,7 +103,11 @@ async function submitScore(container) {
                 time: timeElement.textContent
             })
         });
-        if (!response.ok) throw new Error("Failed to submit score");
+        // Read the error message returned by the server
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText);
+        }
 
         // Hide input and show success message
         input.style.display = "none";
@@ -113,9 +117,8 @@ async function submitScore(container) {
 
         await loadScores();
     } catch (err) {
-        console.error("Error submitting score:", err);
         errorMsg.style.color = "red";
-        errorMsg.textContent = "Failed to submit score!";
+        errorMsg.textContent = errorMsg.textContent = err.message; ;
     }
 }
 

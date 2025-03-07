@@ -111,6 +111,11 @@ func ScoresHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		if err := CheckScore(newScore); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
 		// Add the new score
 		mu.Lock()
 		scoreboard.Scores = append(scoreboard.Scores, newScore)
@@ -126,4 +131,30 @@ func ScoresHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusCreated)
 		json.NewEncoder(w).Encode(newScore)
 	}
+}
+
+// Check payload.
+func CheckScore(newScore Score) error {
+	// We want to read scoreboard, so let's lock here for thread-safety
+	mu.Lock()
+	defer mu.Unlock()
+
+	newScore.Name = strings.TrimSpace(newScore.Name)
+	if len(newScore.Name) == 0 {
+		return fmt.Errorf("invalid name")
+	}
+	if len(newScore.Name) > 20 {
+		return fmt.Errorf("name too long")
+	}
+
+	for _, s := range scoreboard.Scores {
+		if s.Name == newScore.Name {
+			return fmt.Errorf("name '%s' already exists", newScore.Name)
+		}
+	}
+	if newScore.Score < 0 || newScore.Score > 10000 {
+		return fmt.Errorf("invalid score")
+	}
+
+	return nil
 }
