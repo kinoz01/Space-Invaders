@@ -413,7 +413,7 @@ body {
     transition: background-color 0.3s;
     position: absolute;
     top: 300px;
-    left:50%;
+    left: 50%;
     transform: translateX(-50%);
     /* Distance from the bottom */
 }
@@ -452,7 +452,7 @@ body {
     animation: pulse 2s infinite;
 }
 
-/*cutscene*/
+/**** Cutscene ****/
 .scene {
     position: absolute;
     width: 640px;
@@ -491,6 +491,106 @@ body {
     line-height: 1.7;
 }
 
-#mid-scene-text{
+#mid-scene-text {
     top: 90%;
+}
+
+/************ ScoreBoard *************/
+.scoreboard-container {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.scoreboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+    color: #fff;
+    font-family: var(--font-primary);
+    font-size: 12px;
+}
+
+.scoreboard-table th,
+.scoreboard-table td {
+    border: 1px solid #888;
+    padding: 0.5rem;
+    text-align: center;
+}
+
+.input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.score-input {
+    background: #222;
+    color: #fff;
+    border: 1px solid #555;
+    padding: 0.5rem;
+    font-family: 'Press Start 2P', cursive;
+    margin-right: 0.5rem;
+    border-radius: 4px;
+}
+
+.submit-btn {
+    background-color: #555;
+    color: #fff;
+    border: none;
+    padding: 0.6rem 1rem;
+    font-family: 'Press Start 2P', cursive;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+}
+
+.submit-btn:hover {
+    background-color: #777;
+}
+
+.error-message {
+    color: red;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.percentile-message {
+    color: #0f0;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.pagination-btn {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 0.3rem 0.6rem;
+    font-family: 'Press Start 2P', cursive;
+    cursor: pointer;
+    margin: 0 0.5rem;
+    border-radius: 4px;
+}
+
+.pagination-btn:hover {
+    background-color: #555;
+}
+
+.page-info {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.8rem;
+    color: #fff;
+    margin: 0 0.5rem;
 }
