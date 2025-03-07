@@ -28,7 +28,7 @@ async function insertScoreboard() {
       </div>
     `;
 
-    // Insert the same scoreboard structure into all elements with class .scoreboard
+    // Insert the same scoreboard structure into win/lose screen
     document.querySelectorAll(".scoreboard").forEach(sb => {
         sb.innerHTML = scoreboardHTML;
     });
@@ -114,6 +114,7 @@ async function submitScore(container) {
         submitBtn.style.display = "none";
         errorMsg.style.color = "green";
         errorMsg.textContent = "Score Submitted!";
+        input.value = ""
 
         await loadScores();
     } catch (err) {

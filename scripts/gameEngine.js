@@ -26,8 +26,8 @@ class GameEngine {
 
     // Initialize timestep parameters for smooth gameloop
     initTimestepParameters() {
-        this.TIMESTEP = 1000 / 60; // 16.7 ms
-        this.MAX_FRAMETIME = 250;
+        this.TIMESTEP = 7; // 7 ms
+        this.MAX_FRAMETIME = 150;
         this.lastTick = performance.now();
         this.accumulator = 0;
         this.rafHandle = null;

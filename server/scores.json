@@ -1,6 +1,31 @@
 {
   "scores": [
     {
+      "name": "aammar",
+      "score": 5470,
+      "time": "02:21"
+    },
+    {
+      "name": "kino",
+      "score": 3680,
+      "time": "01:33"
+    },
+    {
+      "name": "rachid",
+      "score": 3020,
+      "time": "01:20"
+    },
+    {
+      "name": "sadiqui",
+      "score": 1970,
+      "time": "01:03"
+    },
+    {
+      "name": "test",
+      "score": 1560,
+      "time": "00:41"
+    },
+    {
       "name": "ayoub",
       "score": 860,
       "time": "00:21"
@@ -11,9 +36,9 @@
       "time": "00:37"
     },
     {
-      "name": "kino",
-      "score": 3680,
-      "time": "01:33"
+      "name": "tset",
+      "score": 50,
+      "time": "00:04"
     }
   ]
 }
