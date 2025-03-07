@@ -152,7 +152,7 @@ func CheckScore(newScore Score) error {
 			return fmt.Errorf("name '%s' already exists", newScore.Name)
 		}
 	}
-	if newScore.Score < 0 || newScore.Score > 10000 {
+	if newScore.Score < 0 || newScore.Score > 1000000 {
 		return fmt.Errorf("invalid score")
 	}
 
