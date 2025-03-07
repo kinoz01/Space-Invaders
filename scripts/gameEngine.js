@@ -56,7 +56,6 @@ class GameEngine {
         this.PLAYER_WIDTH = 48;
         this.PLAYER_HEIGHT = 48;
         this.currentWave = 1;
-        this.enemiesPerWave = 21;
         this.isWaveTransitioning = false;
     }
 
@@ -255,7 +254,6 @@ class GameEngine {
 
         const formation = levelFormations[level] || levelFormations[1];
         this.enemyGrid.setFormation(formation.rows, formation.cols);
-        this.enemiesPerWave = formation.rows * formation.cols;
 
         // Example speeds & intervals
         switch (level) {
