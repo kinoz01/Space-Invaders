@@ -16,12 +16,12 @@ async function insertScoreboard() {
           </tr>
         </table>
         <div class="pagination-container">
-          <button class="pagination-btn prev-btn">← Prev</button>
+          <button class="pagination-btn prev-btn">Prev ←</button>
           <span class="page-info"></span>
           <button class="pagination-btn next-btn">Next →</button>
         </div>
         <div class="input-container">
-          <input type="text" placeholder="Enter your name..." maxlength="12" class="score-input">
+          <input type="text" placeholder="Enter your name..." maxlength="20" class="score-input">
           <button class="submit-btn">Submit Score</button>
           <div class="error-message"></div>
         </div>

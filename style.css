@@ -412,7 +412,7 @@ body {
     cursor: pointer;
     transition: background-color 0.3s;
     position: absolute;
-    top: 300px;
+    top: 95%;
     left: 50%;
     transform: translateX(-50%);
     /* Distance from the bottom */

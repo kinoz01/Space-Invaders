@@ -77,7 +77,7 @@ class GameEngine {
         this.isMuted = false;
 
         this.shootSound = new Audio('assets/shot.mp3');
-        this.explosionSound = new Audio('assets/explosion-10.mp3');
+        this.explosionSound = new Audio('assets/explosion2.mp3');
 
         // Initially set all muted flags
         this.bgMusic.muted = this.isMuted;
@@ -339,9 +339,7 @@ class GameEngine {
             } else {
                 // Enemy bullet
                 if (this.checkBulletPlayerCollision(bullet)) {
-                    const explosionX = this.playerX + (this.PLAYER_WIDTH / 2) - 24;
-                    const explosionY = this.playerY + (this.PLAYER_HEIGHT / 2) - 24;
-                    this.explosionManager.createExplosion(explosionX, explosionY);
+                    this.explosionManager.createExplosion(this.playerX, this.playerY);
 
                     if (!this.isMuted) {
                         this.explosionSound.currentTime = 0;
@@ -350,12 +348,6 @@ class GameEngine {
 
                     this.handlePlayerHit();
                     this.bulletPool.release(bullet);
-
-                    // Flash effect on player
-                    this.playerElement.classList.add('flash');
-                    this.playerElement.addEventListener('animationend', () => {
-                        this.playerElement.classList.remove('flash');
-                    }, { once: true });
                 }
             }
         }
@@ -407,9 +399,9 @@ class GameEngine {
     }
 
     victoryScreen() {
+        cancelAnimationFrame(this.rafHandle);
         this.isRunning = false;
         this.gameState = 'victory';
-        cancelAnimationFrame(this.rafHandle);
 
         this.bgMusic.pause();
         this.bgMusic.currentTime = 0;
@@ -420,14 +412,15 @@ class GameEngine {
     }
 
     gameOver() {
+        cancelAnimationFrame(this.rafHandle);
         this.isRunning = false;
         this.gameState = 'gameOver';
-        cancelAnimationFrame(this.rafHandle);
-
+        
         this.bgMusic.pause();
         this.bgMusic.currentTime = 0;
-
-        this.screenManager.showGameOverScreen(this.score);
+        
+        const timeElapsed = this.timeElement.textContent;        
+        this.screenManager.showGameOverScreen(this.score, timeElapsed);
     }
 
     runGameLoop() {
@@ -622,7 +615,7 @@ class GameEngine {
             "You can take an additional hit";
         const speed = 90;
         this._midSceneInterval = this.typeWriter(midTextEl, storyline, speed, () => {
-            // If it finishes (no skip pressed):
+            // If it finishes (no skip pressed) run this function:
             this.hideMidScene();
             this.finishMidScene();
         });

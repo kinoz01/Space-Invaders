@@ -2,6 +2,7 @@ class Explosion {
     constructor(container, poolSize = 20) {
         this.container = container;
         this.pool = [];
+        this.timeoutId = 0; // Fix error resulting on quick start (<300) after win/loss
         this.activeExplosions = new Set();
 
         // Create explosion pool
@@ -31,7 +32,7 @@ class Explosion {
         });
 
         // Return to pool after animation
-        setTimeout(() => {
+        this.timeoutId = setTimeout(() => {
             explosion.classList.remove('active');
             this.container.removeChild(explosion);
             this.pool.push(explosion);
@@ -40,6 +41,9 @@ class Explosion {
     }
 
     clear() {
+        if (this.timeoutId) {         
+            clearTimeout(this.timeoutId);
+        }
         this.activeExplosions.forEach(explosion => {
             explosion.classList.remove('active');
             this.container.removeChild(explosion);

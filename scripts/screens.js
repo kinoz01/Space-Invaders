@@ -28,8 +28,9 @@ class Screens {
         this.victoryScreen.classList.remove('hidden');
     }
 
-    showGameOverScreen(score) {
+    showGameOverScreen(score, time) {
         this.gameOverScreen.querySelector('.final-score').textContent = score;
+        this.gameOverScreen.querySelector('.final-time').textContent = time;
         this.gameOverScreen.classList.remove('hidden');
     }
 }
