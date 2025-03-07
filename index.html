@@ -19,12 +19,25 @@
 </head>
 <body>
 
+  <div id="cutscene" class="scene">
+    <img class="scene-img" src="assets/intro.gif" alt="Intro Cutscene">
+    <div id="cutscene-text" class="scene-text"></div>
+  </div>
+
+  <!-- Mid-Scene -->
+  <div id="mid-scene" class="scene">
+    <img class="scene-img" src="assets/3.webp" alt="Mid Scene Cutscene">
+    <div id="mid-scene-text" class="scene-text"></div>
+  </div>
+
   <div id="lobby">
     <div id="lobby-background"></div>
     <img id="lobby-logo" src="assets/Title.png" alt="Game Logo">
     <div id="lobby-text">Press SPACE to Start</div>
     <img id="lobby-image" src="assets/HowToPlay.png" alt="How to Play">
-    <div style="color: #fff; font-size: small;">P to Pause</div>
+    <div class="directions">M to Mute</div>
+    <div class="directions">P to Pause</div>
+    <div class="directions">S to Skip Story</div>   
   </div>
 
   <div id="game">

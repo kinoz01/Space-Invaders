@@ -120,17 +120,13 @@ class EnemyGrid {
     }
 
     shouldChangeDirection() {
-        let leftmost = Infinity;
-        let rightmost = -Infinity;
-
-        this.enemies.forEach(enemy => {
-            leftmost = Math.min(leftmost, enemy.x);
-            rightmost = Math.max(rightmost, enemy.x + enemy.width);
-        });
+        const leftmost = Math.min(...this.enemies.map(e => e.x));
+        const rightmost = Math.max(...this.enemies.map(e => e.x + e.width));
 
         return (rightmost + this.moveStep >= 640 && this.direction > 0) ||
             (leftmost - this.moveStep <= 0 && this.direction < 0);
     }
+
 
     changeDirection() {
         this.direction *= -1;

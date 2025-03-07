@@ -13,15 +13,15 @@ class Bullet {
         this.element = document.createElement('div');
         this.element.className = 'bullet';
         this.element.style.cssText = `
-        position: absolute;
-        width: ${this.width}px;
-        height: ${this.height}px;
-        background-size: contain;
-        background-repeat: no-repeat;
-        transform: translate3d(${this.x}px, ${this.y}px, 0);
-        will-change: transform;
-        display: none; /* hidden by default, shown when activated */
-      `;
+            position: absolute;
+            width: ${this.width}px;
+            height: ${this.height}px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            transform: translate3d(${this.x}px, ${this.y}px, 0);
+            will-change: transform;
+            display: none; /* hidden by default, shown when activated */
+        `;
     }
 
     // Initialize or "activate" a bullet with specific parameters.
@@ -65,9 +65,9 @@ class Bullet {
     }
 }
 
-// BulletPool manages a reusable pool of Bullet instances
+// Manages a reusable pool of Bullet instances
 class BulletPool {
-    constructor(container, poolSize = 50) {
+    constructor(container, poolSize = 20) {
         this.container = container;
         this.poolSize = poolSize;
         this.bullets = [];
