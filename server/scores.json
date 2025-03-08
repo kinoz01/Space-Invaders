@@ -1,6 +1,11 @@
 {
   "scores": [
     {
+      "name": "g",
+      "score": 5490,
+      "time": "02:28"
+    },
+    {
       "name": "aammar",
       "score": 5470,
       "time": "02:21"
@@ -46,9 +51,9 @@
       "time": "00:04"
     },
     {
-      "name": "g",
-      "score": 5490,
-      "time": "02:28"
+      "name": "problem",
+      "score": 3470,
+      "time": "01:58"
     }
   ]
 }
