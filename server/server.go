@@ -146,6 +146,9 @@ func CheckScore(newScore Score) error {
 	if len(newScore.Name) > 20 {
 		return fmt.Errorf("name too long")
 	}
+	if len(newScore.Name) <= 1 {
+		return fmt.Errorf("name too short")
+	}
 
 	for _, s := range scoreboard.Scores {
 		if s.Name == newScore.Name {
