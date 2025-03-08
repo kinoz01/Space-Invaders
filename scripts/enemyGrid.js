@@ -22,43 +22,99 @@ class EnemyGrid {
 
         this.lastEnemyShot = 0;
         this.enemyShootInterval = 1000; // Minimum time between any enemy shots
-        this.initialize();
+        this.initialize(1);
     }
 
-    initialize() {
+    initialize(level) {
+        // First, clear out any existing enemies from the container
         while (this.container.firstChild) {
             this.container.removeChild(this.container.firstChild);
         }
-
-        // Use current formation values
-        const gridWidth = (48 + this.padding) * this.currentFormation.cols - this.padding;
-        const startX = (640 - gridWidth) / 2;
-        const startY = 60;
-
-        // Clear existing enemies array
+        // Reset enemies array
         this.enemies = [];
 
-        for (let row = 0; row < this.currentFormation.rows; row++) {
-            for (let col = 0; col < this.currentFormation.cols; col++) {
-                const x = startX + col * (48 + this.padding);
-                const y = startY + row * (48 + this.padding);
-                const type = Math.min(row + 1, 3);
+        if (level === 1) {
+            // We'll place them centered across width 640.
+            const totalRows = 7;
+            const enemySize = 48;
+            const baseY = 60;      // starting Y
+            const xPadding = 10;   // horizontal spacing between enemies
+            const yPadding = 50;   // vertical spacing between rows
 
-                const enemy = new Enemy(x, y, type);
-                this.enemies.push(enemy);
-                this.container.appendChild(enemy.element);
+            for (let row = 0; row < totalRows; row++) {
+                const enemyCount = row + 1; // row 0 => 1 enemy, row 4 => 5 enemies
+                // total width of the row in pixels
+                const rowWidth = enemyCount * (enemySize + xPadding) - xPadding;
+                // center horizontally across 640px
+                const startX = (640 - rowWidth) / 2;
+                const y = baseY + row * yPadding;
+
+                // Create enemies in this row
+                for (let i = 0; i < enemyCount; i++) {
+                    const x = startX + i * (enemySize + xPadding);
+                    // Assign a type (1..3).
+                    const type = Math.floor(Math.random() * 3) + 1;
+
+                    const enemy = new Enemy(x, y, type);
+                    this.enemies.push(enemy);
+                    this.container.appendChild(enemy.element);
+                }
+            }
+        } else if (level === 2) {
+            // We'll define the row counts in an array
+            // row 0 => 4 enemies, row 1 => 8 enemies, row 2 => 4 enemies
+            const rowCounts = [6, 10, 6];
+            const enemySize = 48;
+            const xPadding = 10;  // horizontal gap between enemies
+            const yPadding = 50;  // vertical gap between rows
+            const baseY = 60;     // top row's Y position
+
+            rowCounts.forEach((count, rowIndex) => {
+                // total width of this row
+                const rowWidth = count * (enemySize + xPadding) - xPadding;
+                // center it in a 640px-wide area
+                const startX = (640 - rowWidth) / 2;
+                // compute Y for this row
+                const y = baseY + rowIndex * yPadding;
+
+                // Create each enemy for this row
+                for (let i = 0; i < count; i++) {
+                    const x = startX + i * (enemySize + xPadding);
+                    // You can pick type however you want. For now, random from 1..3:
+                    const type = Math.floor(Math.random() * 3) + 1;
+
+                    const enemy = new Enemy(x, y, type);
+                    this.enemies.push(enemy);
+                    this.container.appendChild(enemy.element);
+                }
+            })
+        } else {
+            const gridWidth = (48 + this.padding) * this.currentFormation.cols - this.padding;
+            const startX = (640 - gridWidth) / 2;
+            const startY = 60;
+
+            for (let row = 0; row < this.currentFormation.rows; row++) {
+                for (let col = 0; col < this.currentFormation.cols; col++) {
+                    const x = startX + col * (48 + this.padding);
+                    const y = startY + row * (48 + this.padding);
+                    const type = Math.min(row + 1, 3);
+
+                    const enemy = new Enemy(x, y, type);
+                    this.enemies.push(enemy);
+                    this.container.appendChild(enemy.element);
+                }
             }
         }
     }
 
     // Add method to change formation
-    setFormation(rows, cols, padding = 10) {
+    setFormation(rows, cols, level) {
         this.currentFormation = {
             rows: rows,
             cols: cols
         };
-        this.padding = padding;
-        this.initialize();
+        this.padding = 10;
+        this.initialize(level);
     }
 
     tryEnemyShoot(currentTime) {

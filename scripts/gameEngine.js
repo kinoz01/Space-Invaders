@@ -138,12 +138,12 @@ class GameEngine {
 
             // Press L to jump level
             if (e.code === 'KeyL' && this.gameState === 'playing') {
-                if (this.currentLevel < 5) {
+                if (this.currentLevel < 6) {
                     this.currentWave++;
                     if (this.currentWave % 2 === 0) {
                         this.currentLevel++;
-                        // If we jumped to level 3 => show mid-scene
-                        if (this.currentLevel === 3) {
+                        // If we jumped to level 4 => show mid-scene
+                        if (this.currentLevel === 4) {
                             cancelAnimationFrame(this.rafHandle);
                             this.showMidScene();
                         } else {
@@ -241,19 +241,28 @@ class GameEngine {
     }
 
     setupLevel(level) {
+        // const backgroundEl = document.getElementById('background');
+        // if (level === 5) {
+        //     backgroundEl.style.backgroundImage = "url('assets/background6.webp')";
+        // } else if (level === 6) {
+        //     backgroundEl.style.backgroundImage = "url('assets/background6.webp')";
+        // } else {
+        //     backgroundEl.style.backgroundImage = "url('assets/Playground.webp')";
+        // }
         const baseSpeed = 0.03;
 
         const levelFormations = {
-            1: { rows: 3, cols: 7 },
+            1: { rows: 5, cols: 5 },
             2: { rows: 4, cols: 6 },
             3: { rows: 3, cols: 9 },
             4: { rows: 5, cols: 6 },
             5: { rows: 5, cols: 7 },
+            6: { rows: 5, cols: 7 },
         };
-        this.enemyGrid.dualShooting = (level === 3 || level === 4 || level === 2);
+        this.enemyGrid.dualShooting = (level === 3 || level === 4 || level === 2 || level === 6);
 
         const formation = levelFormations[level] || levelFormations[1];
-        this.enemyGrid.setFormation(formation.rows, formation.cols);
+        this.enemyGrid.setFormation(formation.rows, formation.cols, level);
 
         // Example speeds & intervals
         switch (level) {
@@ -274,6 +283,10 @@ class GameEngine {
                 this.enemyGrid.enemyShootInterval = 700;
                 break;
             case 5:
+                this.enemyGrid.setContinuousSpeed(baseSpeed * 5.5);
+                this.enemyGrid.enemyShootInterval = 700;
+                break;
+            case 6:
                 this.enemyGrid.setContinuousSpeed(baseSpeed * 6);
                 this.enemyGrid.enemyShootInterval = 700;
                 break;
@@ -369,13 +382,13 @@ class GameEngine {
             if (this.currentWave % 2 === 0) {
                 this.currentLevel++;
                 // If last level completed => Victory
-                if (this.currentLevel > 5) {
+                if (this.currentLevel > 6) {
                     this.victoryScreen();
                     this.isWaveTransitioning = false;
                     return;
                 }
                 // if we've just reached level 3
-                if (this.currentLevel === 3) {
+                if (this.currentLevel === 4) {
                     cancelAnimationFrame(this.rafHandle);
                     this.showMidScene();
                 } else {
@@ -383,7 +396,7 @@ class GameEngine {
                 }
             } else {
                 // Re-initialize same level's formation
-                this.enemyGrid.initialize();
+                this.enemyGrid.initialize(this.currentLevel);
             }
 
             // Clear any active bullets
@@ -413,11 +426,11 @@ class GameEngine {
         cancelAnimationFrame(this.rafHandle);
         this.isRunning = false;
         this.gameState = 'gameOver';
-        
+
         this.bgMusic.pause();
         this.bgMusic.currentTime = 0;
-        
-        const timeElapsed = this.timeElement.textContent;        
+
+        const timeElapsed = this.timeElement.textContent;
         this.screenManager.showGameOverScreen(this.score, timeElapsed);
     }
 
@@ -592,7 +605,7 @@ class GameEngine {
         });
 
         // We'll track that the cutscene is currently active to skip if we want
-        this.isCutsceneActive = true; 
+        this.isCutsceneActive = true;
     }
 
     hideCutscene() {

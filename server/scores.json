@@ -6,6 +6,11 @@
       "time": "02:21"
     },
     {
+      "name": "space",
+      "score": 5250,
+      "time": "02:17"
+    },
+    {
       "name": "kino",
       "score": 3680,
       "time": "01:33"
@@ -39,6 +44,11 @@
       "name": "tset",
       "score": 50,
       "time": "00:04"
+    },
+    {
+      "name": "g",
+      "score": 5490,
+      "time": "02:28"
     }
   ]
 }
