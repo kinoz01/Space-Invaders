@@ -33,7 +33,7 @@ class EnemyGrid {
         // Reset enemies array
         this.enemies = [];
 
-        if (level === 1) {
+        if (level === 2) {  // Triangle formation
             // We'll place them centered across width 640.
             const totalRows = 7;
             const enemySize = 48;
@@ -46,8 +46,8 @@ class EnemyGrid {
                 // total width of the row in pixels
                 const rowWidth = enemyCount * (enemySize + xPadding) - xPadding;
                 // center horizontally across 640px
-                const startX = (640 - rowWidth) / 2;
-                const y = baseY + row * yPadding;
+                const startX = (640 - rowWidth) / 2; // The middle of the row
+                const y = baseY + row * yPadding; // compute Y for this row
 
                 // Create enemies in this row
                 for (let i = 0; i < enemyCount; i++) {
@@ -60,7 +60,7 @@ class EnemyGrid {
                     this.container.appendChild(enemy.element);
                 }
             }
-        } else if (level === 2) {
+        } else if (level === 3) { // Zigzag formation: 6-10-6
             // We'll define the row counts in an array
             // row 0 => 4 enemies, row 1 => 8 enemies, row 2 => 4 enemies
             const rowCounts = [6, 10, 6];
@@ -88,7 +88,7 @@ class EnemyGrid {
                     this.container.appendChild(enemy.element);
                 }
             })
-        } else {
+        } else { // Default rectangular formation
             const gridWidth = (48 + this.padding) * this.currentFormation.cols - this.padding;
             const startX = (640 - gridWidth) / 2;
             const startY = 60;

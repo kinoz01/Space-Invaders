@@ -100,7 +100,7 @@ class GameEngine {
 
     // Setup key up/down buttons.
     setupEventListeners() {
-        document.addEventListener('keydown', (e) => {
+        document.addEventListener('keyup', (e) => {
             // If the game is paused, check for resume/restart keys first
             if (this.gameState === 'paused') {
                 if (e.code === 'KeyP') {
@@ -113,9 +113,10 @@ class GameEngine {
                     this.gameState = 'lobby';
                     this.resetGame();
                     this.startGame();
-                    return;
+                    return
                 }
-            }
+            }})
+        document.addEventListener('keydown', (e) => {
 
             // If user presses M
             if (e.code === 'Semicolon') {
@@ -241,14 +242,19 @@ class GameEngine {
     }
 
     setupLevel(level) {
-        // const backgroundEl = document.getElementById('background');
-        // if (level === 5) {
-        //     backgroundEl.style.backgroundImage = "url('assets/background6.webp')";
-        // } else if (level === 6) {
-        //     backgroundEl.style.backgroundImage = "url('assets/background6.webp')";
-        // } else {
-        //     backgroundEl.style.backgroundImage = "url('assets/Playground.webp')";
-        // }
+        const backgroundEl = document.getElementById('background');
+        if (level === 2) {
+            backgroundEl.style.backgroundImage = "url('assets/Playground2.webp')";
+            backgroundEl.style.fill = "black";
+            backgroundEl.style.opacity = 0.7;
+        } else if (level === 3) {
+            backgroundEl.style.backgroundImage = "url('assets/Playground3.webp')";
+            backgroundEl.style.fill = "black";
+            backgroundEl.style.opacity = 0.4;
+        } else {
+            backgroundEl.style.backgroundImage = "url('assets/Playground.webp')";
+        }
+
         const baseSpeed = 0.03;
 
         const levelFormations = {
