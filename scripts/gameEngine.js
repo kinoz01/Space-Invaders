@@ -115,7 +115,13 @@ class GameEngine {
                     this.startGame();
                     return
                 }
-            }})
+            }
+            // Pause
+            if (e.code === 'KeyP' && this.gameState === 'playing') {
+                this.togglePause();
+            }
+        })
+
         document.addEventListener('keydown', (e) => {
 
             // If user presses M
@@ -130,11 +136,6 @@ class GameEngine {
                 if (e.code === 'Space') {
                     this.handleSpacePress();
                 }
-            }
-
-            // Pause
-            if (e.code === 'KeyP' && this.gameState === 'playing') {
-                this.togglePause();
             }
 
             // Press L to jump level
