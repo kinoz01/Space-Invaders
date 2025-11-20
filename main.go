@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"spaceinvaders/server"
 )
 
@@ -25,9 +26,13 @@ func main() {
 	http.HandleFunc("/api/scores", server.ScoresHandler)
 
 	// Start the server
-	port := "127.0.0.1:8080"
-	fmt.Println("Server running at http://" + port)
-	if err := http.ListenAndServe(port, nil); err != nil {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	addr := ":" + port
+	fmt.Println("Server running at http://localhost:" + port)
+	if err := http.ListenAndServe(addr, nil); err != nil {
 		fmt.Println("Error starting server:", err)
 	}
 }
